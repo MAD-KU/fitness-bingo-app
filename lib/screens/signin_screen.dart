@@ -1,3 +1,4 @@
+import 'package:application/screens/ForgotPasswordScreen.dart';
 import 'package:application/screens/admin/AdminDashboardScreen.dart';
 import 'package:application/screens/user/UserDashboardScreen.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +136,10 @@ class _SigninScreenState extends State<SigninScreen> {
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: () {
-                        // Add forgot password logic
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPasswordScreen()));
                       },
                       child: Text(
                         "Forgot Password?",
