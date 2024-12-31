@@ -1,6 +1,5 @@
-import 'package:application/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:application/screens/signup_screen.dart';
 import '../services/auth_service.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -32,25 +31,13 @@ class _SigninScreenState extends State<SigninScreen> {
     setState(() => isLoading = false);
 
     if (result == 'admin') {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Login Successfull: $result'),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Login Successful: Admin'),
       ));
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const AdminScreen(),
-      //   ),
-      // );
     } else if (result == 'user') {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Login Successfull: $result'),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Login Successful: User'),
       ));
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const UserScreen(),
-      //   ),
-      // );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Login Failed: $result'),
@@ -64,13 +51,16 @@ class _SigninScreenState extends State<SigninScreen> {
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
-                // gradient: LinearGradient(
-                //   colors: [Color(0xFFB2F9FC), Color(0xFFC4C4C4BB)],
-                //   begin: Alignment.bottomRight,
-                //   end: Alignment.topLeft,
-                // ),
-                ),
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                colors: [
+                  Theme.of(context).scaffoldBackgroundColor,
+                  Theme.of(context).cardColor,
+                ],
+                center: const Alignment(0.0, 0.0),
+                radius: 1.5,
+              ),
+            ),
           ),
           Center(
             child: SingleChildScrollView(
@@ -79,37 +69,26 @@ class _SigninScreenState extends State<SigninScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Sign In",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
+                  Text(
                     "Welcome back! Please log in to continue.",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black54,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
                     controller: emailController,
-                    style: const TextStyle(color: Colors.black87),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      labelStyle: const TextStyle(color: Colors.black54),
-                      prefixIcon:
-                          const Icon(Icons.email, color: Colors.black54),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        // borderSide: BorderSide.none,
-                      ),
+                      prefixIcon: const Icon(Icons.email),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -124,18 +103,11 @@ class _SigninScreenState extends State<SigninScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: passwordController,
-                    style: const TextStyle(color: Colors.black87),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: const TextStyle(color: Colors.black54),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.black54),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        // borderSide: BorderSide.none,
-                      ),
+                      prefixIcon: const Icon(Icons.lock),
                     ),
                     validator: (value) {
                       if (value == null || value.length < 6) {
@@ -144,26 +116,36 @@ class _SigninScreenState extends State<SigninScreen> {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Add forgot password logic
+                      },
+                      child: Text(
+                        "Forgot Password?",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: isLoading ? null : signIn,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4CAF50),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+                      style: Theme.of(context).elevatedButtonTheme.style,
                       child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? const CircularProgressIndicator(color: Colors.black)
                           : const Text(
                               'Sign In',
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                     ),
                   ),
@@ -172,20 +154,22 @@ class _SigninScreenState extends State<SigninScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignupScreen()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignupScreen(),
+                          ),
+                        );
                       },
-                      child: const Text(
+                      child: Text(
                         "Don't have an account? Sign Up",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF4CAF50),
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

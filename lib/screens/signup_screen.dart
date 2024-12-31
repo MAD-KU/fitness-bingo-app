@@ -1,6 +1,5 @@
-import 'package:application/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:application/screens/signin_screen.dart';
 import '../services/auth_service.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -27,11 +26,6 @@ class _SignupScreenState extends State<SignupScreen> {
     var password = passwordController.text;
     var confirmPassword = confirmPasswordController.text;
 
-    print("username : $username");
-    print("email : $email");
-    print("password : $password");
-    print("CPassword : $confirmPassword");
-
     if (password == confirmPassword) {
       setState(() => isLoading = true);
       String? result = await _authService.signup(
@@ -48,7 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
         ));
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SigninScreen()),
+          MaterialPageRoute(builder: (context) => const SigninScreen()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -64,13 +58,16 @@ class _SignupScreenState extends State<SignupScreen> {
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
-                // gradient: LinearGradient(
-                //   colors: [Color(0xFFB2F9FC), Color(0xFFC4C4C4BB)],
-                //   begin: Alignment.bottomRight,
-                //   end: Alignment.topLeft,
-                // ),
-                ),
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                colors: [
+                  Theme.of(context).scaffoldBackgroundColor,
+                  Theme.of(context).cardColor,
+                ],
+                center: const Alignment(0.0, 0.0),
+                radius: 1.5,
+              ),
+            ),
           ),
           Center(
             child: SingleChildScrollView(
@@ -79,65 +76,44 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Sign Up",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
+                  Text(
                     "Create your account to get started!",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black54,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
                     controller: usernameController,
-                    style: const TextStyle(color: Colors.black87),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     decoration: InputDecoration(
                       labelText: 'Username',
-                      labelStyle: const TextStyle(color: Colors.black54),
-                      prefixIcon:
-                          const Icon(Icons.person_3, color: Colors.black54),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        // borderSide: BorderSide.none,
-                      ),
+                      prefixIcon: const Icon(Icons.person),
                     ),
-                    keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.length < 3) {
                         return 'Username must be at least 3 characters';
                       }
-                      return value;
+                      return null;
                     },
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: emailController,
-                    style: const TextStyle(color: Colors.black87),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      labelStyle: const TextStyle(color: Colors.black54),
-                      prefixIcon:
-                          const Icon(Icons.email, color: Colors.black54),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        // borderSide: BorderSide.none,
-                      ),
+                      prefixIcon: const Icon(Icons.email),
                     ),
-                    keyboardType: TextInputType.emailAddress,
                     validator: (value) {
-                      if (value!.isEmpty || !value.contains('@')) {
+                      if (value == null || !value.contains('@')) {
                         return 'Enter a valid email';
                       }
                       return null;
@@ -146,18 +122,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: passwordController,
-                    style: const TextStyle(color: Colors.black87),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: const TextStyle(color: Colors.black54),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.black54),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        // borderSide: BorderSide.none,
-                      ),
+                      prefixIcon: const Icon(Icons.lock),
                     ),
                     validator: (value) {
                       if (value == null || value.length < 6) {
@@ -169,46 +138,27 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: confirmPasswordController,
-                    style: const TextStyle(color: Colors.black87),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Confirm Password',
-                      labelStyle: const TextStyle(color: Colors.black54),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.black54),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        // borderSide: BorderSide.none,
-                      ),
+                      prefixIcon: const Icon(Icons.lock),
                     ),
-                    validator: (value) {
-                      if (value == null || value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: isLoading ? null : signUp,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4CAF50),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+                      style: Theme.of(context).elevatedButtonTheme.style,
                       child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? const CircularProgressIndicator(color: Colors.black)
                           : const Text(
                               'Sign Up',
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                     ),
                   ),
@@ -217,20 +167,22 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SigninScreen()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SigninScreen(),
+                          ),
+                        );
                       },
-                      child: const Text(
+                      child: Text(
                         "Already have an account? Sign In",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF4CAF50),
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
