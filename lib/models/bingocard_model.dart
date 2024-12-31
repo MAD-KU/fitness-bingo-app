@@ -1,24 +1,36 @@
 class BingoCardModel {
   String? id;
-  String? name;
+  String? title;
   String? description;
   String? userId;
+  String? category; //easy or medium or hard
+  String? imageUrl;
 
-  BingoCardModel({this.id, this.name, this.description, this.userId});
+  BingoCardModel(
+      {this.id,
+      this.title,
+      this.description,
+      this.userId,
+      this.category,
+      this.imageUrl});
 
   BingoCardModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
+    title = json['title'];
     description = json['description'];
     userId = json['userId'];
+    category = json['category'];
+    imageUrl = json['imageUrl'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['name'] = this.name;
+    data['name'] = this.title;
     data['description'] = this.description;
     data['userId'] = this.userId;
+    data['category'] = this.category;
+    data['imageUrl'] = this.imageUrl;
     return data;
   }
 }

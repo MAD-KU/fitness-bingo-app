@@ -59,18 +59,6 @@ class _SigninScreenState extends State<SigninScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                colors: [
-                  Theme.of(context).scaffoldBackgroundColor,
-                  Theme.of(context).cardColor,
-                ],
-                center: const Alignment(0.0, 0.0),
-                radius: 1.5,
-              ),
-            ),
-          ),
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
