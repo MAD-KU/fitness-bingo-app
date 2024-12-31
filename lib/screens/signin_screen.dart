@@ -1,3 +1,5 @@
+import 'package:application/screens/admin/AdminDashboardScreen.dart';
+import 'package:application/screens/user/UserDashboardScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:application/screens/signup_screen.dart';
 import '../services/auth_service.dart';
@@ -32,12 +34,18 @@ class _SigninScreenState extends State<SigninScreen> {
 
     if (result == 'admin') {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Login Successful: Admin'),
+        content: Text('Login Successful: admin'),
       ));
+
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => AdminDashboardScreen()));
     } else if (result == 'user') {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Login Successful: User'),
       ));
+
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => UserDashboardScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Login Failed: $result'),
@@ -85,7 +93,10 @@ class _SigninScreenState extends State<SigninScreen> {
                   const SizedBox(height: 30),
                   TextFormField(
                     controller: emailController,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Email',
                       prefixIcon: const Icon(Icons.email),
@@ -103,7 +114,10 @@ class _SigninScreenState extends State<SigninScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: passwordController,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(color: Colors.white),
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
