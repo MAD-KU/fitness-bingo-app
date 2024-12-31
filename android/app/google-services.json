@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "189624901804",
+    "firebase_url": "https://fintness-bingo-app-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fintness-bingo-app",
+    "storage_bucket": "fintness-bingo-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189624901804:android:bcc52b6eefc0c1f92fbf09",
+        "android_client_info": {
+          "package_name": "com.example.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDbuN6IZCtSgntUpcnEImZhJ-Y9e5yu7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
