@@ -1,5 +1,5 @@
+import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
-
 import '../../services/auth_service.dart';
 import '../signin_screen.dart';
 
@@ -16,45 +16,49 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'User Dashboard',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        // backgroundColor: Theme.of(context).cardColor,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            colors: [
-              Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).cardColor,
-            ],
-            center: const Alignment(0.0, 0.0),
-            radius: 1.5,
-          ),
-        ),
-        padding: const EdgeInsets.all(20.0),
-        child: Center(
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                _authService.signOut();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (contex) => SigninScreen()));
-              },
-              style: Theme.of(context).elevatedButtonTheme.style,
-              child: const Text(
-                'Sign Out',
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              UserProfileSection(),
+              const SizedBox(height: 20),
+              const Text(
+                'Top Training',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
+              const SizedBox(height: 10),
+              Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(20),
+                  image: const DecorationImage(
+                    image: AssetImage('assets/images/heavy-weight.webp'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      'Power Blast - 45 Minutes',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900,
+                          ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

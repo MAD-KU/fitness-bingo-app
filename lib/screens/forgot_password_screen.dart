@@ -32,26 +32,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   // title: const Text(
-      //   //   'Forgot Password',
-      //   //   style: TextStyle(
-      //   //     fontWeight: FontWeight.bold,
-      //   //   ),
-      //   ),
-      //   // backgroundColor: Theme.of(context).primaryColor,
-      // ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            colors: [
-              Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).cardColor,
-            ],
-            center: const Alignment(0.0, 0.0),
-            radius: 1.5,
-          ),
-        ),
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
