@@ -1,4 +1,5 @@
 import 'package:application/screens/signin_screen.dart';
+import 'package:application/screens/splash_screen.dart';
 import 'package:application/themes/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: SigninScreen(),
+      home: SplashScreen(),
     );
   }
 }

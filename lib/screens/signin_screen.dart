@@ -1,6 +1,6 @@
-import 'package:application/screens/ForgotPasswordScreen.dart';
-import 'package:application/screens/admin/AdminDashboardScreen.dart';
-import 'package:application/screens/user/UserDashboardScreen.dart';
+import 'package:application/screens/forgot_password_screen.dart';
+import 'package:application/screens/admin/admin_dashboard_screen.dart';
+import 'package:application/screens/user/user_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:application/screens/signup_screen.dart';
 import '../services/auth_service.dart';
