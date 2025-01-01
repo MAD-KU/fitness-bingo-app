@@ -1,9 +1,9 @@
+import 'package:application/models/user_model.dart';
 import 'package:application/screens/signin_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../services/auth_service.dart';
+import '../controllers/auth_controller.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
@@ -13,38 +13,18 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  final AuthService _authService = AuthService();
-  String userName = 'Loading...';
-  String userEmail = 'Loading...';
-  String profileImage = 'assets/images/profile.png';
-  String role = 'user';
+  late AuthController authController;
+  late UserModel currentUser;
 
   @override
   void initState() {
-    super.initState();
-    _fetchUserData();
-  }
-
-  Future<void> _fetchUserData() async {
-    try {
-      User? user = await _authService.getCurrentUser();
-      if (user != null) {
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-
-        setState(() {
-          userName = userDoc['name'] ?? 'User';
-          userEmail = userDoc['email'] ?? 'user@gmail.com';
-          role = userDoc['role'] ?? 'user';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        userName = e.toString();
-      });
+    authController = Provider.of<AuthController>(context, listen: false);
+    if (authController.currentUser == null) {
+      authController.getCurrentUser();
     }
+    currentUser = authController.currentUser!;
+
+    super.initState();
   }
 
   @override
@@ -59,26 +39,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Profile Section
               Center(
                 child: Column(
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: profileImage.startsWith('http')
-                          ? NetworkImage(profileImage)
-                          : AssetImage(profileImage) as ImageProvider,
+                      backgroundImage: currentUser.imageUrl!.startsWith('http')
+                          ? NetworkImage(currentUser.imageUrl!)
+                          : AssetImage(currentUser.imageUrl!) as ImageProvider,
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      userName,
+                      currentUser.name!,
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      userEmail,
+                      currentUser.email!,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
@@ -88,8 +67,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Menu Options
               ListTile(
                 leading: const Icon(Icons.edit),
                 title: const Text('Edit profile'),
@@ -103,23 +80,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 onTap: () {},
               ),
               ListTile(
-                leading: const Icon(Icons.payment),
-                title: const Text('Payment/Cards'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: const Icon(Icons.language),
-                title: const Text('Language'),
-                trailing: const Text('English (En)'),
-                onTap: () {},
-              ),
-              ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Sign Out'),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
-                  _authService.signOut();
+                  authController.signOut();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => SigninScreen()));
                 },
