@@ -74,10 +74,11 @@ class AuthController extends ChangeNotifier {
             .get();
 
         _currentUser = UserModel(
-            id: user.uid,
-            name: userDetails['name'],
-            email: userDetails['email'],
-            role: userDetails['role']);
+          id: user.uid,
+          name: userDetails['name'],
+          email: userDetails['email'],
+          role: userDetails['role'],
+        );
       }
     } catch (e) {
       return null;
@@ -85,6 +86,19 @@ class AuthController extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<String?> getCurrentUserId() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        return user.uid;
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
   }
 
   signOut() async {

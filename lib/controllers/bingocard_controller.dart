@@ -1,18 +1,25 @@
 import 'package:application/models/bingocard_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class BingoCardController extends ChangeNotifier {
-  final List<BingoCardModel> _bingoCards = [];
+  List<BingoCardModel> _bingoCards = [];
   bool _isLoading = false;
   String? _errorMessage;
 
   // Getters
   List<BingoCardModel> get bingoCards => _bingoCards;
+
   bool get isLoading => _isLoading;
+
   String? get errorMessage => _errorMessage;
 
   // Add a new BingoCard
-  void addBingoCard(BingoCardModel bingoCard) {
+  void addBingoCard(BingoCardModel bingoCard) async {
+    await FirebaseFirestore.instance
+        .collection('bingoCards')
+        .add(bingoCard.toJson());
+
     _bingoCards.add(bingoCard);
     notifyListeners();
   }
@@ -45,8 +52,24 @@ class BingoCardController extends ChangeNotifier {
   }
 
   // Get all BingoCards
-  List<BingoCardModel> getAllBingoCards() {
-    return _bingoCards;
+  Future<void> getAllBingoCards() async {
+    try {
+      _setLoading(true); // Set loading state
+      QuerySnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection('bingoCards').get();
+
+      // Map documents to BingoCardModel
+      _bingoCards = snapshot.docs
+          .map((doc) => BingoCardModel.fromJson(doc.data()))
+          .toList();
+
+      _errorMessage = null; // Clear errors
+    } catch (e) {
+      _errorMessage = e.toString(); // Set error message
+    } finally {
+      _setLoading(false); // Reset loading state
+    }
+    notifyListeners();
   }
 
   // Helper method to set loading state
