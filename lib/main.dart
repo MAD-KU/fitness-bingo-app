@@ -1,9 +1,11 @@
+import 'package:application/controllers/auth_controller.dart';
 import 'package:application/screens/signin_screen.dart';
 import 'package:application/screens/splash_screen.dart';
 import 'package:application/themes/theme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -11,7 +13,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => AuthController()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

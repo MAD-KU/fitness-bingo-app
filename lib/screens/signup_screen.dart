@@ -1,6 +1,8 @@
+import 'package:application/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:application/screens/signin_screen.dart';
-import '../services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../controllers/auth_controller.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -10,8 +12,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final AuthService _authService = AuthService();
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -21,6 +21,8 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isLoading = false;
 
   Future<void> signUp() async {
+    final authController = Provider.of<AuthController>(context, listen: false);
+
     var username = usernameController.text;
     var email = emailController.text;
     var password = passwordController.text;
@@ -28,12 +30,11 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (password == confirmPassword) {
       setState(() => isLoading = true);
-      String? result = await _authService.signup(
-        name: username,
-        email: email,
-        password: password,
-        role: "user",
-      );
+      String? result = await authController.signup(UserModel(
+          name: username,
+          email: email.trim(),
+          password: password.trim(),
+          role: "user"));
       setState(() => isLoading = false);
 
       if (result == null) {

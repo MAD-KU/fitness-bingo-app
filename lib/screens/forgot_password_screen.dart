@@ -1,5 +1,7 @@
-import 'package:application/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../controllers/auth_controller.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -9,16 +11,17 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final AuthService _authService = AuthService();
   final TextEditingController emailController = TextEditingController();
   bool isLoading = false;
 
   Future<void> resetPassword() async {
+    final authController = Provider.of<AuthController>(context, listen: false);
+
     var email = emailController.text;
 
     setState(() => isLoading = true);
 
-    await _authService.resetPassword(email: email);
+    await authController.resetPassword(email: email);
 
     setState(() => isLoading = false);
 
@@ -54,7 +57,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             const SizedBox(height: 30),
             TextFormField(
               controller: emailController,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Email',
                 prefixIcon: const Icon(Icons.email),

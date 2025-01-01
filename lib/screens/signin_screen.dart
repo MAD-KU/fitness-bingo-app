@@ -1,9 +1,11 @@
+import 'package:application/controllers/auth_controller.dart';
+import 'package:application/models/auth_model.dart';
 import 'package:application/screens/forgot_password_screen.dart';
 import 'package:application/screens/admin/admin_dashboard_screen.dart';
 import 'package:application/screens/user/user_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:application/screens/signup_screen.dart';
-import '../services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({Key? key}) : super(key: key);
@@ -13,23 +15,20 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
-  final AuthService _authService = AuthService();
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
 
   Future<void> signIn() async {
+    final authController = Provider.of<AuthController>(context, listen: false);
     var email = emailController.text;
     var password = passwordController.text;
 
     setState(() => isLoading = true);
 
-    String? result = await _authService.signin(
-      email: email,
-      password: password,
-    );
+    String? result = await authController
+        .signin(AuthModel(email: email.trim(), password: password.trim()));
 
     setState(() => isLoading = false);
 

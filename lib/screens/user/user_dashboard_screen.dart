@@ -1,6 +1,5 @@
 import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
-import '../../services/auth_service.dart';
 import '../signin_screen.dart';
 
 class UserDashboardScreen extends StatefulWidget {
@@ -11,7 +10,6 @@ class UserDashboardScreen extends StatefulWidget {
 }
 
 class _UserDashboardScreenState extends State<UserDashboardScreen> {
-  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
