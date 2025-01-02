@@ -1,4 +1,5 @@
 import 'package:application/screens/admin/activity/activity_edit_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:application/controllers/activity_controller.dart';
@@ -15,6 +16,7 @@ class ActivityDetailsScreen extends StatefulWidget {
 
 class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
   late ActivityController activityController;
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void initState() {
@@ -110,48 +112,49 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ActivityEditScreen(
-                                      activityId: widget.activityId)));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          backgroundColor: Theme.of(context).primaryColor,
-                        ),
-                        child: const Text(
-                          'Edit',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          activityController.deleteActivity(activity.id!);
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          backgroundColor: Colors.redAccent,
-                        ),
-                        child: const Text(
-                          'Delete',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                if (userId == activity.userId)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ActivityEditScreen(
+                                        activityId: widget.activityId)));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            backgroundColor: Theme.of(context).primaryColor,
+                          ),
+                          child: const Text(
+                            'Edit',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            activityController.deleteActivity(activity.id!);
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           );

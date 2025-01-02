@@ -1,6 +1,7 @@
 import 'package:application/controllers/bingocard_controller.dart';
 import 'package:application/screens/admin/activity/manage_activities_screen.dart';
 import 'package:application/screens/admin/bingo_card/bingo_card_edit_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:application/models/bingocard_model.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ class BingoCardDetailsScreen extends StatefulWidget {
 
 class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
   late BingoCardController bingoCardController;
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void initState() {
@@ -113,34 +115,35 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BingoCardEditScreen(
-                                  bingoCard: bingoCard,
+                      if (userId == bingoCard.userId)
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BingoCardEditScreen(
+                                    bingoCard: bingoCard,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
 
-                            if (result == true) {
-                              bingoCardController
-                                  .getBingoCardById(widget.bingoCard.id!);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            backgroundColor: Theme.of(context).primaryColor,
-                          ),
-                          child: const Text(
-                            'Edit',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              if (result == true) {
+                                bingoCardController
+                                    .getBingoCardById(widget.bingoCard.id!);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              backgroundColor: Theme.of(context).primaryColor,
+                            ),
+                            child: const Text(
+                              'Edit',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
