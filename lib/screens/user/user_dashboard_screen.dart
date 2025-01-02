@@ -1,3 +1,4 @@
+import 'package:application/screens/user/activity/articles_screen.dart';
 import 'package:application/screens/user/bingo_card/user_bingocard_manage_screen.dart';
 import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,11 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                     context,
                     icon: Icons.article,
                     title: 'Articles',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ArticlesScreen()));
+                    },
                   ),
                   _buildDashboardCard(
                     context,
