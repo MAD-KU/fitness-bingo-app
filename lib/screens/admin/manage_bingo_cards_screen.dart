@@ -150,7 +150,7 @@ class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w700),
             ),
