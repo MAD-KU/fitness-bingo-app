@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart'; // Import url_launcher package
-// import 'package:video_player/video_player.dart'; // Import video_player package
-import '../../models/article_model.dart';
-import '../../controllers/article_controller.dart';
-import '../../controllers/auth_controller.dart';
-import './add_article_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../models/article_model.dart';
+import '../../../controllers/article_controller.dart';
+import '../../../controllers/auth_controller.dart';
+import 'add_article_screen.dart';
 import './update_or_view_article_screen.dart';
 
 class ManageArticlesScreen extends StatefulWidget {
@@ -16,7 +15,6 @@ class ManageArticlesScreen extends StatefulWidget {
 }
 
 class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
-  // late VideoPlayerController _controller;
   bool _isVideoPlaying = false;
 
   @override
@@ -25,34 +23,20 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
     Provider.of<ArticleController>(context, listen: false).getAllArticles();
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   _controller.dispose();
-  // }
-
   void _playVideo(String youtubeLink) async {
-    final Uri url = Uri.parse(youtubeLink); // Parse the URL
+    final Uri url = Uri.parse(youtubeLink);
 
     try {
-      // Check if it's a YouTube URL
       if (youtubeLink.contains("youtube.com") || youtubeLink.contains("youtu.be")) {
-        // Construct YouTube intent (Android specific)
         final Uri intentUrl = Uri.parse('vnd.youtube:${url.queryParameters['v']}');
-
-        // Try to launch in YouTube external app
         if (await canLaunchUrl(intentUrl)) {
           await launchUrl(intentUrl, mode: LaunchMode.externalApplication);
         } else {
-          // Fallback to regular browser URL
           await launchUrl(url, mode: LaunchMode.externalApplication);
         }
       } else {
-        // If it's not a YouTube URL, launch the regular URL
         if (await canLaunchUrl(url)) {
           await launchUrl(url, mode: LaunchMode.externalApplication);
-        } else {
-          print('Could not launch the video link.');
         }
       }
     } catch (e) {
@@ -81,7 +65,6 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
 
             return Column(
               children: [
-                // Add Article Button at the top (No video section for this)
                 _buildDashboardCard(
                   context,
                   icon: Icons.add,
@@ -96,15 +79,12 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
 
                     // Refresh the articles list when returning from add screen
                     if (result == true) {
-                      if (mounted) {
-                        Provider.of<ArticleController>(context, listen: false).getAllArticles();
-                      }
+                      Provider.of<ArticleController>(context, listen: false).getAllArticles();
                     }
                   },
-                  isAddArticle: true, // Flag for Add Article
+                  isAddArticle: true,
                 ),
                 const SizedBox(height: 20),
-                // List of Articles
                 Expanded(
                   child: ListView.builder(
                     itemCount: controller.articles.length,
@@ -126,11 +106,8 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
                               ),
                             );
 
-                            // Refresh the articles list when returning from update screen
                             if (result == true) {
-                              if (mounted) {
-                                Provider.of<ArticleController>(context, listen: false).getAllArticles();
-                              }
+                              Provider.of<ArticleController>(context, listen: false).getAllArticles();
                             }
                           },
                           youtubeLink: article.youtubeLink,
@@ -152,8 +129,8 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
         required IconData icon,
         required String title,
         required VoidCallback onTap,
-        String? youtubeLink, // The YouTube video link for the article
-        bool isAddArticle = false, // Flag to check if it's the add article card
+        String? youtubeLink,
+        bool isAddArticle = false,
       }) {
     return GestureDetector(
       onTap: onTap,
@@ -164,8 +141,8 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
           gradient: !isAddArticle
               ? LinearGradient(
             colors: [
-              Colors.grey[850]!, // Dark Gray
-              Colors.grey[900]!, // Black
+              Colors.black54!,
+              Colors.grey[900]!,
             ],
             stops: const [0.3, 1.0],
             begin: Alignment.topLeft,
@@ -194,13 +171,12 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Video section - only for article cards, not for Add Article button
             if (!isAddArticle && youtubeLink != null && youtubeLink.isNotEmpty)
               Container(
-                height: 200, // Adjust height of the video placeholder
+                height: 200,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.black12, // Placeholder for the video section
+                  color: Colors.black12,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Stack(
@@ -220,7 +196,7 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
                         ),
                         onPressed: () {
                           if (youtubeLink.isNotEmpty) {
-                            _playVideo(youtubeLink); // Pass the correct YouTube link here
+                            _playVideo(youtubeLink);
                           }
                         },
                       ),
@@ -230,10 +206,10 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
               )
             else if (!isAddArticle)
               Container(
-                height: 200, // Placeholder for no video
+                height: 200,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.black, // Placeholder black background
+                  color: Colors.black,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(
@@ -249,7 +225,7 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
               ),
             const SizedBox(height: 12),
             GestureDetector(
-              onTap: onTap, // Tapping the card navigates to the article screen
+              onTap: onTap,
               child: Row(
                 children: [
                   Icon(

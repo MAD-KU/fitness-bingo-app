@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/article_model.dart';
-import '../../controllers/article_controller.dart';
+import '../../../models/article_model.dart';
+import '../../../controllers/article_controller.dart';
 
 class UpdateOrViewArticleScreen extends StatefulWidget {
   final ArticleModel article;
