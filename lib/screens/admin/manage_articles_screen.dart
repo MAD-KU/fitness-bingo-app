@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import url_launcher package
-import 'package:video_player/video_player.dart'; // Import video_player package
+// import 'package:video_player/video_player.dart'; // Import video_player package
 import '../../models/article_model.dart';
 import '../../controllers/article_controller.dart';
 import '../../controllers/auth_controller.dart';
@@ -16,7 +16,7 @@ class ManageArticlesScreen extends StatefulWidget {
 }
 
 class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
-  late VideoPlayerController _controller;
+  // late VideoPlayerController _controller;
   bool _isVideoPlaying = false;
 
   @override
@@ -25,11 +25,11 @@ class _ManageArticlesScreenState extends State<ManageArticlesScreen> {
     Provider.of<ArticleController>(context, listen: false).getAllArticles();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _controller.dispose();
+  // }
 
   void _playVideo(String youtubeLink) async {
     final Uri url = Uri.parse(youtubeLink); // Parse the URL
