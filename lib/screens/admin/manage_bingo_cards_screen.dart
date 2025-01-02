@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/auth_controller.dart';
 import '../../controllers/bingocard_controller.dart';
+import 'bingo_card_details_screen.dart';
 
 class ManageBingoCardsScreen extends StatefulWidget {
   const ManageBingoCardsScreen({Key? key}) : super(key: key);
@@ -15,13 +16,16 @@ class ManageBingoCardsScreen extends StatefulWidget {
 }
 
 class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
+  late BingoCardController bingoCardController;
   late UserModel user;
 
   @override
   void initState() {
     super.initState();
     user = Provider.of<AuthController>(context, listen: false).currentUser!;
-    Provider.of<BingoCardController>(context, listen: false).getAllBingoCards();
+    bingoCardController =
+        Provider.of<BingoCardController>(context, listen: false);
+    bingoCardController.getAllBingoCards();
   }
 
   @override
@@ -73,13 +77,22 @@ class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
                           image: user.imageUrl,
                         );
                       } else {
-                        BingoCardModel card =
-                            controller.bingoCards[index - 1];
+                        BingoCardModel card = controller.bingoCards[index - 1];
                         return _buildDashboardCard(
                           context,
                           icon: Icons.card_giftcard,
                           title: card.title ?? 'No Title',
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BingoCardDetailsScreen(
+                                  bingoCard: card,
+                                ),
+                              ),
+                            );
+                            bingoCardController.getAllBingoCards();
+                          },
                           image: card.imageUrl!.contains("http")
                               ? card.imageUrl
                               : null,
@@ -150,7 +163,7 @@ class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w700),
             ),
