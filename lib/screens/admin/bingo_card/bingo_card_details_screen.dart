@@ -1,5 +1,6 @@
 import 'package:application/controllers/bingocard_controller.dart';
-import 'package:application/screens/admin/bingo_card_edit_screen.dart';
+import 'package:application/screens/admin/activity/manage_activities_screen.dart';
+import 'package:application/screens/admin/bingo_card/bingo_card_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:application/models/bingocard_model.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Image
                   Container(
                     height: 200,
                     width: double.infinity,
@@ -63,7 +63,8 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                         image: bingoCard.imageUrl != null &&
-                                bingoCard.imageUrl!.contains('http')
+                                bingoCard.imageUrl!.isNotEmpty &&
+                                bingoCard.imageUrl!.contains("http")
                             ? NetworkImage(bingoCard.imageUrl!)
                             : const AssetImage('assets/images/default.jpg')
                                 as ImageProvider,
@@ -72,8 +73,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Title
                   Text(
                     bingoCard.title ?? 'No Title',
                     style: Theme.of(context).textTheme.headline6?.copyWith(
@@ -82,8 +81,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                         ),
                   ),
                   const SizedBox(height: 10),
-
-                  // Description
                   Text(
                     bingoCard.description ?? 'No Description',
                     style: Theme.of(context)
@@ -92,8 +89,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                         ?.copyWith(color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-
-                  // Category
                   Row(
                     children: [
                       const Icon(Icons.category, size: 20),
@@ -105,8 +100,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                     ],
                   ),
                   const SizedBox(height: 10),
-
-                  // User ID
                   Row(
                     children: [
                       const Icon(Icons.person, size: 20),
@@ -118,8 +111,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
-
-                  // Action Buttons
                   Row(
                     children: [
                       Expanded(
@@ -134,7 +125,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                               ),
                             );
 
-                            // Refresh data if edit was successful
                             if (result == true) {
                               bingoCardController
                                   .getBingoCardById(widget.bingoCard.id!);
@@ -155,10 +145,13 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            // Placeholder for activities
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("Activities coming soon!")));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ManageActivitiesScreen(
+                                          bingoCard: widget.bingoCard,
+                                        )));
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),

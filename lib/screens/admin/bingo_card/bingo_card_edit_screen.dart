@@ -55,7 +55,6 @@ class _BingoCardEditScreenState extends State<BingoCardEditScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title Input
                 TextFormField(
                   controller: titleController,
                   decoration: const InputDecoration(labelText: 'Title'),
@@ -72,7 +71,6 @@ class _BingoCardEditScreenState extends State<BingoCardEditScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Description Input
                 TextFormField(
                   controller: descriptionController,
                   decoration: const InputDecoration(labelText: 'Description'),
@@ -122,7 +120,6 @@ class _BingoCardEditScreenState extends State<BingoCardEditScreen> {
                 ),
                 const SizedBox(height: 30),
 
-                // Save Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

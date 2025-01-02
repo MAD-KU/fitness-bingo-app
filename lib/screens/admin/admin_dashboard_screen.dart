@@ -1,4 +1,4 @@
-import 'package:application/screens/admin/manage_bingo_cards_screen.dart';
+import 'package:application/screens/admin/bingo_card/manage_bingo_cards_screen.dart';
 import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               const UserProfileSection(),
               const SizedBox(height: 30),
 
-              // Options for Admin
               GridView.count(
                 shrinkWrap: true,
                 crossAxisCount: 2,
@@ -67,7 +66,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
-  // Dashboard Card Widget
   Widget _buildDashboardCard(
     BuildContext context, {
     required IconData icon,

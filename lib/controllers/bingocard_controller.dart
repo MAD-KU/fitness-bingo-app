@@ -8,7 +8,6 @@ class BingoCardController extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
   List<BingoCardModel> get bingoCards => _bingoCards;
 
   BingoCardModel? get bingoCard => _bingoCard;
@@ -17,7 +16,6 @@ class BingoCardController extends ChangeNotifier {
 
   String? get errorMessage => _errorMessage;
 
-  // Add a new BingoCard
   void addBingoCard(BingoCardModel bingoCard) async {
     await FirebaseFirestore.instance
         .collection('bingoCards')
@@ -27,7 +25,6 @@ class BingoCardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Update an existing BingoCard
   Future<void> updateBingoCard(
       String id, BingoCardModel updatedBingoCard) async {
     try {
@@ -36,7 +33,6 @@ class BingoCardController extends ChangeNotifier {
           .doc(id)
           .update(updatedBingoCard.toJson());
 
-      // Update local list
       final index = _bingoCards.indexWhere((card) => card.id == id);
       if (index != -1) {
         _bingoCards[index] = updatedBingoCard;
@@ -45,11 +41,10 @@ class BingoCardController extends ChangeNotifier {
         _errorMessage = 'Bingo card not found';
       }
     } catch (e) {
-      _errorMessage = e.toString(); // Capture and store error message
+      _errorMessage = e.toString();
     }
   }
 
-  // Delete a BingoCard by ID
   void deleteBingoCard(String id) {
     _bingoCards.removeWhere((card) => card.id == id);
     notifyListeners();
@@ -66,12 +61,11 @@ class BingoCardController extends ChangeNotifier {
           .get();
 
       if (doc.exists) {
-        // Map Firestore data to BingoCardModel with ID
         _bingoCard = BingoCardModel.fromJson(doc.data()!..['id'] = doc.id);
-        _errorMessage = null; // Clear errors
+        _errorMessage = null;
       } else {
         _errorMessage = 'Bingo card not found';
-        _bingoCard = null; // Reset _bingoCard
+        _bingoCard = null;
       }
     } catch (e) {
       _errorMessage = e.toString();
@@ -82,30 +76,27 @@ class BingoCardController extends ChangeNotifier {
     }
   }
 
-  // Get all BingoCards
   Future<void> getAllBingoCards() async {
     try {
-      _setLoading(true); // Set loading state
+      _setLoading(true);
       QuerySnapshot<Map<String, dynamic>> snapshot =
           await FirebaseFirestore.instance.collection('bingoCards').get();
 
-      // Map documents to BingoCardModel
       _bingoCards = snapshot.docs.map((doc) {
         var data = doc.data();
-        data['id'] = doc.id; // Add the document ID manually
-        return BingoCardModel.fromJson(data); // Map to model
+        data['id'] = doc.id;
+        return BingoCardModel.fromJson(data);
       }).toList();
 
-      _errorMessage = null; // Clear errors
+      _errorMessage = null;
     } catch (e) {
-      _errorMessage = e.toString(); // Set error message
+      _errorMessage = e.toString();
     } finally {
-      _setLoading(false); // Reset loading state
+      _setLoading(false);
     }
     notifyListeners();
   }
 
-  // Helper method to set loading state
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
