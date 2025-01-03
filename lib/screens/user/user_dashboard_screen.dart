@@ -7,6 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
 import '../signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:application/widgets/chat_widget.dart';
+import 'package:application/widgets/user_profile.dart';
+import 'package:application/screens/user/article/articles_screen.dart';
+import 'package:application/screens/user/bingo_card/user_bingocard_manage_screen.dart';
 
 class UserDashboardScreen extends StatefulWidget {
   const UserDashboardScreen({Key? key}) : super(key: key);
@@ -16,13 +22,16 @@ class UserDashboardScreen extends StatefulWidget {
 }
 
 class _UserDashboardScreenState extends State<UserDashboardScreen> {
+  String? userId;
+
   @override
   void initState() {
     super.initState();
-    // Fetch achievements for the current user when the dashboard is initialized
+    // Get the userId from FirebaseAuth
+    userId = FirebaseAuth.instance.currentUser?.uid;
     _fetchAchievements();
   }
-
+  
   Future<void> _fetchAchievements() async {
     final currentUserId =
         Provider.of<AuthController>(context, listen: false).currentUser?.id;
@@ -36,67 +45,67 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              UserProfileSection(),
-              const SizedBox(height: 30),
-              GridView.count(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(), // Added
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+        child: Stack(  // Wrapped with Stack
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.card_giftcard,
-                    title: 'Bingo Cards',
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserBingoCardsScreen()));
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.leaderboard,
-                    title: 'Leader Board',
-                    onTap: () {
-                      Navigator.push(
+                  UserProfileSection(),
+                  const SizedBox(height: 30),
+                  GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    children: [
+                      _buildDashboardCard(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => LeaderboardScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.article,
-                    title: 'Articles',
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ArticlesScreen()));
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.store,
-                    title: 'Store',
-                    onTap: () {},
+                        icon: Icons.card_giftcard,
+                        title: 'Bingo Cards',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserBingoCardsScreen()));
+                        },
+                      ),
+                      _buildDashboardCard(
+                        context,
+                        icon: Icons.leaderboard,
+                        title: 'Leader Board',
+                        onTap: () {},
+                      ),
+                      _buildDashboardCard(
+                        context,
+                        icon: Icons.article,
+                        title: 'Articles',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ArticlesScreen()));
+                        },
+                      ),
+                      _buildDashboardCard(
+                        context,
+                        icon: Icons.store,
+                        title: 'Store',
+                        onTap: () {} ,
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
-              _buildRecentAchievementsSection(),
-            ],
-          ),
+            ),
+            // Add ChatWidget here
+            Align(
+              alignment: Alignment.bottomRight,
+              child: userId == null
+                  ? const CircularProgressIndicator()  // Show loading if userId is not available
+                  : ChatWidget(userId: userId!), // Pass the dynamic userId
+            ),
+          ],
         ),
       ),
     );
