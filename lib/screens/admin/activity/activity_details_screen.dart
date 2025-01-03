@@ -73,7 +73,7 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                 const SizedBox(height: 20),
                 Text(
                   activity.name ?? 'No Name',
-                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor,
                       ),
@@ -85,7 +85,7 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                     const SizedBox(width: 8),
                     Text(
                       'Status: ${activity.status ?? 'N/A'}',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
                 ),
@@ -96,7 +96,7 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                     const SizedBox(width: 8),
                     Text(
                       'Category: ${activity.category ?? 'N/A'}',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
                 ),
@@ -107,7 +107,7 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                     const SizedBox(width: 8),
                     Text(
                       'User ID: ${activity.userId ?? 'N/A'}',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
                 ),

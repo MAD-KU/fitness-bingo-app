@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'controllers/user_controller.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -19,6 +20,7 @@ void main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AuthController()),
+    ChangeNotifierProvider(create: (context) => UserController()), // Add UserController
     ChangeNotifierProvider(create: (context) => BingoCardController()),
     ChangeNotifierProvider(create: (context) => ActivityController()),
     ChangeNotifierProvider(create: (context) => ArticleController()),

@@ -94,7 +94,7 @@ class ViewArticleScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               article.title ?? 'No Title',
-              style: Theme.of(context).textTheme.headline5?.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).primaryColor,
               ),
