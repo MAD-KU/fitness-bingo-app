@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../controllers/chathistory_controller.dart';
 import '../models/chathistory_model.dart';
-
-const String OPENAI_API_KEY =
-    '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';
 
 class ChatWidget extends StatefulWidget {
   final String userId;
@@ -81,7 +79,7 @@ class _ChatWidgetState extends State<ChatWidget> with SingleTickerProviderStateM
       final response = await http.post(
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
-          'Authorization': 'Bearer $OPENAI_API_KEY',
+          'Authorization': 'Bearer ${dotenv.env['OPENAI_API_KEY']}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
