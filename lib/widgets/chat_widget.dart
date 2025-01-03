@@ -161,7 +161,7 @@ class _ChatWidgetState extends State<ChatWidget> with SingleTickerProviderStateM
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).scaffoldBackgroundColor,
                                 borderRadius: const BorderRadius.vertical(
                                   top: Radius.circular(20),
                                 ),
@@ -246,7 +246,7 @@ class _ChatWidgetState extends State<ChatWidget> with SingleTickerProviderStateM
                                   ),
                                   const SizedBox(width: 8),
                                   CircleAvatar(
-                                    backgroundColor: Theme.of(context).primaryColor,
+                                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                     child: IconButton(
                                       icon: const Icon(Icons.send, color: Colors.white),
                                       onPressed: () => _sendMessage(_messageController.text),
@@ -304,7 +304,7 @@ class ChatBubble extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: isUser ? Theme.of(context).primaryColor : Colors.grey[200],
+              color: isUser ? Colors.grey : Colors.grey[200],
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
