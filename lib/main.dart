@@ -2,6 +2,7 @@ import 'package:application/controllers/activity_controller.dart';
 import 'package:application/controllers/article_controller.dart';
 import 'package:application/controllers/auth_controller.dart';
 import 'package:application/controllers/bingocard_controller.dart';
+import 'package:application/controllers/chathistory_controller.dart';
 import 'package:application/screens/signin_screen.dart';
 import 'package:application/screens/splash_screen.dart';
 import 'package:application/themes/theme.dart';
@@ -22,6 +23,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => BingoCardController()),
     ChangeNotifierProvider(create: (context) => ActivityController()),
     ChangeNotifierProvider(create: (context) => ArticleController()),
+    ChangeNotifierProvider(create: (context) => ChatHistoryController()),
   ], child: const MyApp()));
 }
 
