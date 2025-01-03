@@ -77,7 +77,7 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                   const SizedBox(height: 20),
                   Text(
                     bingoCard.title ?? 'No Title',
-                    style: Theme.of(context).textTheme.headline6?.copyWith(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor,
                         ),
@@ -97,7 +97,7 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                       const SizedBox(width: 8),
                       Text(
                         'Category: ${bingoCard.category ?? 'N/A'}',
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
@@ -108,7 +108,7 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                       const SizedBox(width: 8),
                       Text(
                         'User ID: ${bingoCard.userId ?? 'N/A'}',
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
