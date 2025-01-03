@@ -1,65 +1,99 @@
-import 'package:flutter/material.dart';
 import 'package:application/models/achievements_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-class AchievementsController extends ChangeNotifier {
-  final List<AchievementsModel> _achievements = [];
-  bool _isLoading = false;
-  String? _errorMessage;
+class AchievementController extends ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Getters
+  List<AchievementsModel> _achievements = [];
   List<AchievementsModel> get achievements => _achievements;
+
+  bool _isLoading = false;
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
 
-  // Add a new Achievement
-  void addAchievement(AchievementsModel achievement) {
-    _achievements.add(achievement);
+  String _errorMessage = "";
+  String get errorMessage => _errorMessage;
+
+  // Add a new list for leaderboard entries
+  List<LeaderboardEntry> _leaderboardEntries = [];
+  List<LeaderboardEntry> get leaderboardEntries => _leaderboardEntries;
+
+  Future<void> fetchAchievementsForUser(String userId) async {
+    _isLoading = true;
+    _errorMessage = "";
     notifyListeners();
-  }
 
-  // Update an existing Achievement
-  void updateAchievement(String id, AchievementsModel updatedAchievement) {
-    final index = _achievements.indexWhere((achievement) => achievement.id == id);
-    if (index != -1) {
-      _achievements[index] = updatedAchievement;
-      notifyListeners();
-    } else {
-      _errorMessage = 'Achievement not found';
-      notifyListeners();
-    }
-  }
-
-  // Delete an Achievement by ID
-  void deleteAchievement(String id) {
-    _achievements.removeWhere((achievement) => achievement.id == id);
-    notifyListeners();
-  }
-
-  // Get an Achievement by ID
-  AchievementsModel? getAchievementById(String id) {
     try {
-      return _achievements.firstWhere((achievement) => achievement.id == id);
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('achievements')
+          .where(
+          'userId', isEqualTo: userId) // Fetch achievements for the specified user
+          .get();
+
+      _achievements = querySnapshot.docs
+          .map((doc) => AchievementsModel.fromJson(
+          {'id': doc.id, ...doc.data() as Map<String, dynamic>}))
+          .toList();
     } catch (e) {
-      _errorMessage = 'Achievement not found';
+      _errorMessage = "Error fetching achievements: $e";
+    } finally {
+      _isLoading = false;
       notifyListeners();
-      return null;
     }
   }
 
-  // Get all Achievements
-  List<AchievementsModel> getAllAchievements() {
-    return _achievements;
-  }
-
-  // Helper method to set loading state
-  void _setLoading(bool value) {
-    _isLoading = value;
+  Future<void> fetchLeaderboardData() async {
+    _isLoading = true;
+    _errorMessage = "";
     notifyListeners();
-  }
 
-  // Helper method to handle errors
-  void _setError(String? error) {
-    _errorMessage = error;
-    notifyListeners();
+    try {
+      // Fetch users, excluding admins
+      QuerySnapshot usersSnapshot = await _firestore.collection('users').where('role', isNotEqualTo: 'admin').get();
+
+      // Create a list to hold the leaderboard entries
+      List<LeaderboardEntry> entries = [];
+
+      // Iterate through each user and calculate their score
+      for (var userDoc in usersSnapshot.docs) {
+        String userId = userDoc.id;
+
+        // Fetch achievements for the current user
+        QuerySnapshot achievementsSnapshot = await _firestore
+            .collection('achievements')
+            .where('userId', isEqualTo: userId)
+            .get();
+
+        // Calculate the total score for the user (e.g., number of achievements)
+        int totalScore = achievementsSnapshot.docs.length;
+
+        // Add the user and their score to the list
+        entries.add(LeaderboardEntry(
+          userId: userId,
+          userName: userDoc.get('name') ?? 'Unknown',
+          score: totalScore,
+        ));
+      }
+
+      // Sort the entries by score in descending order
+      entries.sort((a, b) => b.score.compareTo(a.score));
+
+      // Update the leaderboard entries
+      _leaderboardEntries = entries;
+    } catch (e) {
+      _errorMessage = "Error fetching leaderboard data: $e";
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
+}
+
+class LeaderboardEntry {
+  final String userId;
+  final String userName;
+  final int score;
+
+  LeaderboardEntry(
+      {required this.userId, required this.userName, required this.score});
 }
