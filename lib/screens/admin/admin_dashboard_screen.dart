@@ -1,4 +1,5 @@
 import 'package:application/screens/admin/manage_bingo_cards_screen.dart';
+import 'package:application/screens/admin/store_screen.dart';
 import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     context,
                     icon: Icons.store,
                     title: 'Store',
-                    onTap: () {},
+                    onTap: () {Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => AdminStoreScreen()));
+                   },
                   ),
                 ],
               ),
@@ -113,7 +118,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1
+                  .bodyMedium
                   ?.copyWith(color: Theme.of(context).primaryColor),
             ),
           ],

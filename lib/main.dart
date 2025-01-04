@@ -1,5 +1,6 @@
 import 'package:application/controllers/auth_controller.dart';
 import 'package:application/controllers/bingocard_controller.dart';
+import 'package:application/controllers/store_controller.dart';
 import 'package:application/screens/signin_screen.dart';
 import 'package:application/screens/splash_screen.dart';
 import 'package:application/themes/theme.dart';
@@ -18,6 +19,7 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AuthController()),
     ChangeNotifierProvider(create: (context) => BingoCardController()),
+    ChangeNotifierProvider(create:(context) => StoreController()),
   ], child: const MyApp()));
 }
 
