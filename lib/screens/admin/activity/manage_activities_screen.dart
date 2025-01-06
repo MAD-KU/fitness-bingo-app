@@ -1,39 +1,47 @@
-import 'package:application/models/user_model.dart';
-import 'package:application/models/bingocard_model.dart';
-import 'package:application/screens/admin/add_bingo_card_screen.dart';
+import 'package:application/screens/admin/activity/activity_details_screen.dart';
+import 'package:application/screens/admin/activity/add_activity_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:application/models/activity_model.dart';
+import 'package:application/controllers/activity_controller.dart';
+import 'package:application/controllers/auth_controller.dart';
+import 'package:application/models/user_model.dart';
 
-import '../../controllers/auth_controller.dart';
-import '../../controllers/bingocard_controller.dart';
+import '../../../models/bingocard_model.dart';
 
-class ManageBingoCardsScreen extends StatefulWidget {
-  const ManageBingoCardsScreen({Key? key}) : super(key: key);
+class ManageActivitiesScreen extends StatefulWidget {
+  final BingoCardModel bingoCard;
+
+  const ManageActivitiesScreen({Key? key, required this.bingoCard})
+      : super(key: key);
 
   @override
-  State<ManageBingoCardsScreen> createState() => _ManageBingoCardsScreenState();
+  State<ManageActivitiesScreen> createState() => _ManageActivitiesScreenState();
 }
 
-class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
+class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
+  late ActivityController activityController;
   late UserModel user;
 
   @override
   void initState() {
     super.initState();
     user = Provider.of<AuthController>(context, listen: false).currentUser!;
-    Provider.of<BingoCardController>(context, listen: false).getAllBingoCards();
+    activityController =
+        Provider.of<ActivityController>(context, listen: false);
+    activityController.getAllActivities(widget.bingoCard.id!);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Bingo Cards'),
+        title: const Text('Manage Activities'),
         backgroundColor: Colors.transparent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Consumer<BingoCardController>(
+        child: Consumer<ActivityController>(
           builder: (context, controller, child) {
             if (controller.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -48,7 +56,7 @@ class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: GridView.builder(
-                    itemCount: controller.bingoCards.length + 1,
+                    itemCount: controller.activities.length + 1,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -57,32 +65,35 @@ class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
                     ),
                     itemBuilder: (context, index) {
                       if (index == 0) {
-                        return _buildDashboardCard(
+                        return _buildActivityCard(
                           context,
                           icon: Icons.add,
-                          title: 'Add',
+                          title: 'Add Activity',
                           onTap: () {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const AddBingoCardScreen(),
-                              ),
-                            );
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddActivityScreen(
+                                          bingoCard: widget.bingoCard,
+                                        )));
                           },
                           image: user.imageUrl,
                         );
                       } else {
-                        BingoCardModel card =
-                            controller.bingoCards[index - 1];
-                        return _buildDashboardCard(
+                        ActivityModel activity =
+                            controller.activities[index - 1];
+                        return _buildActivityCard(
                           context,
-                          icon: Icons.card_giftcard,
-                          title: card.title ?? 'No Title',
-                          onTap: () {},
-                          image: card.imageUrl!.contains("http")
-                              ? card.imageUrl
-                              : null,
+                          icon: Icons.star,
+                          title: activity.name ?? 'No Name',
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ActivityDetailsScreen(
+                                        activityId: activity.id!)));
+                          },
+                          image: activity.imageUrl ?? '',
                         );
                       }
                     },
@@ -96,7 +107,7 @@ class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
     );
   }
 
-  Widget _buildDashboardCard(BuildContext context,
+  Widget _buildActivityCard(BuildContext context,
       {required IconData icon,
       required String title,
       required VoidCallback onTap,
@@ -125,18 +136,16 @@ class _ManageBingoCardsScreenState extends State<ManageBingoCardsScreen> {
               offset: const Offset(0, 3),
             ),
           ],
-          image: image != null
+          image: image != null && image.isNotEmpty
               ? DecorationImage(
-                  image: image.contains('http')
-                      ? NetworkImage(image)
-                      : AssetImage(image) as ImageProvider,
+                  image: NetworkImage(image),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.7),
                     BlendMode.darken,
                   ),
                 )
-              : null, // Hide image if `backgroundImage` is null
+              : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

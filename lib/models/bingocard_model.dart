@@ -3,7 +3,7 @@ class BingoCardModel {
   String? title;
   String? description;
   String? userId;
-  String? category; //easy or medium or hard
+  String? category; //default or custom
   String? imageUrl;
 
   BingoCardModel(

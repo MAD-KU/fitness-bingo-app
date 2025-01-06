@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 
 class BingoCardController extends ChangeNotifier {
   List<BingoCardModel> _bingoCards = [];
+  BingoCardModel? _bingoCard;
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
   List<BingoCardModel> get bingoCards => _bingoCards;
+
+  BingoCardModel? get bingoCard => _bingoCard;
 
   bool get isLoading => _isLoading;
 
   String? get errorMessage => _errorMessage;
 
-  // Add a new BingoCard
   void addBingoCard(BingoCardModel bingoCard) async {
     await FirebaseFirestore.instance
         .collection('bingoCards')
@@ -24,55 +25,121 @@ class BingoCardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Update an existing BingoCard
-  void updateBingoCard(String id, BingoCardModel updatedBingoCard) {
-    final index = _bingoCards.indexWhere((card) => card.id == id);
-    if (index != -1) {
-      _bingoCards[index] = updatedBingoCard;
-      notifyListeners();
-    } else {
-      _errorMessage = 'Bingo card not found';
+  Future<void> updateBingoCard(
+      String id, BingoCardModel updatedBingoCard) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('bingoCards')
+          .doc(id)
+          .update(updatedBingoCard.toJson());
+
+      final index = _bingoCards.indexWhere((card) => card.id == id);
+      if (index != -1) {
+        _bingoCards[index] = updatedBingoCard;
+        notifyListeners();
+      } else {
+        _errorMessage = 'Bingo card not found';
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
     }
   }
 
-  // Delete a BingoCard by ID
   void deleteBingoCard(String id) {
     _bingoCards.removeWhere((card) => card.id == id);
     notifyListeners();
   }
 
-  // Get a BingoCard by ID
-  BingoCardModel? getBingoCardById(String id) {
+  Future<void> getBingoCardById(String id) async {
     try {
-      return _bingoCards.firstWhere((card) => card.id == id);
+      _setLoading(true);
+
+      DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
+          .instance
+          .collection('bingoCards')
+          .doc(id)
+          .get();
+
+      if (doc.exists) {
+        _bingoCard = BingoCardModel.fromJson(doc.data()!..['id'] = doc.id);
+        _errorMessage = null;
+      } else {
+        _errorMessage = 'Bingo card not found';
+        _bingoCard = null;
+      }
     } catch (e) {
-      _errorMessage = 'Bingo card not found';
-      return null;
+      _errorMessage = e.toString();
+      _bingoCard = null;
+    } finally {
+      _setLoading(false);
+      notifyListeners();
     }
   }
 
-  // Get all BingoCards
   Future<void> getAllBingoCards() async {
     try {
-      _setLoading(true); // Set loading state
+      _setLoading(true);
       QuerySnapshot<Map<String, dynamic>> snapshot =
           await FirebaseFirestore.instance.collection('bingoCards').get();
 
-      // Map documents to BingoCardModel
-      _bingoCards = snapshot.docs
-          .map((doc) => BingoCardModel.fromJson(doc.data()))
-          .toList();
+      _bingoCards = snapshot.docs.map((doc) {
+        var data = doc.data();
+        data['id'] = doc.id;
+        return BingoCardModel.fromJson(data);
+      }).toList();
 
-      _errorMessage = null; // Clear errors
+      _errorMessage = null;
     } catch (e) {
-      _errorMessage = e.toString(); // Set error message
+      _errorMessage = e.toString();
     } finally {
-      _setLoading(false); // Reset loading state
+      _setLoading(false);
     }
     notifyListeners();
   }
 
-  // Helper method to set loading state
+  Future<void> getAllBingoCardsForUser(String userId) async {
+    try {
+      _setLoading(true);
+
+      QuerySnapshot<Map<String, dynamic>> snapshotDefault =
+          await FirebaseFirestore.instance
+              .collection('bingoCards')
+              .where('category', isEqualTo: "default")
+              .get();
+
+      QuerySnapshot<Map<String, dynamic>> snapshotUser = await FirebaseFirestore
+          .instance
+          .collection('bingoCards')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      Set<String> uniqueIds = {};
+      _bingoCards = [
+        ...snapshotDefault.docs.map((doc) {
+          var data = doc.data();
+          data['id'] = doc.id;
+          uniqueIds.add(doc.id);
+          return BingoCardModel.fromJson(data);
+        }),
+        ...snapshotUser.docs
+            .where((doc) => !uniqueIds.contains(doc.id))
+            .map((doc) {
+          var data = doc.data();
+          data['id'] = doc.id;
+          return BingoCardModel.fromJson(data);
+        })
+      ];
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _setLoading(false);
+    }
+
+    notifyListeners();
+  }
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();

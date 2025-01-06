@@ -1,5 +1,7 @@
-import 'package:application/screens/admin/manage_bingo_cards_screen.dart';
 import 'package:application/screens/admin/store_screen.dart';
+import 'package:application/screens/admin/bingo_card/manage_bingo_cards_screen.dart';
+import 'package:application/screens/admin/article/manage_articles_screen.dart';
+import 'package:application/screens/admin/manage_user/manage_users_screen.dart'; // Import ManageUsersScreen
 import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +25,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               const UserProfileSection(),
               const SizedBox(height: 30),
 
-              // Options for Admin
               GridView.count(
                 shrinkWrap: true,
                 crossAxisCount: 2,
@@ -34,7 +35,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     context,
                     icon: Icons.people,
                     title: 'Users',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ManageUsersScreen()), // Navigate to ManageUsersScreen
+                      );
+                    },
                   ),
                   _buildDashboardCard(
                     context,
@@ -51,7 +58,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     context,
                     icon: Icons.article,
                     title: 'Articles',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManageArticlesScreen()));
+                    },
                   ),
                   _buildDashboardCard(
                     context,
@@ -72,13 +84,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
-  // Dashboard Card Widget
   Widget _buildDashboardCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context, {
+        required IconData icon,
+        required String title,
+        required VoidCallback onTap,
+      }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../controllers/auth_controller.dart';
+import '../../../controllers/auth_controller.dart';
 
 class AddBingoCardScreen extends StatefulWidget {
   const AddBingoCardScreen({Key? key}) : super(key: key);
