@@ -3,6 +3,7 @@ import 'package:application/controllers/activity_controller.dart';
 import 'package:application/controllers/article_controller.dart';
 import 'package:application/controllers/auth_controller.dart';
 import 'package:application/controllers/bingocard_controller.dart';
+import 'package:application/controllers/store_controller.dart';
 import 'package:application/controllers/chathistory_controller.dart';
 import 'package:application/controllers/track_activity_controller.dart';
 import 'package:application/controllers/track_bingocard_controller.dart';
@@ -29,6 +30,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => UserController()),
     // Add UserController
     ChangeNotifierProvider(create: (context) => BingoCardController()),
+    ChangeNotifierProvider(create:(context) => StoreController()),
     ChangeNotifierProvider(create: (context) => ActivityController()),
     ChangeNotifierProvider(create: (context) => ArticleController()),
     ChangeNotifierProvider(create: (context) => AchievementController()),

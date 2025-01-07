@@ -1,3 +1,4 @@
+import 'package:application/screens/admin/store_screen.dart';
 import 'package:application/screens/admin/bingo_card/manage_bingo_cards_screen.dart';
 import 'package:application/screens/admin/article/manage_articles_screen.dart';
 import 'package:application/screens/admin/manage_user/manage_users_screen.dart'; // Import ManageUsersScreen
@@ -68,7 +69,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     context,
                     icon: Icons.store,
                     title: 'Store',
-                    onTap: () {},
+                    onTap: () {Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => AdminStoreScreen()));
+                   },
                   ),
                 ],
               ),
