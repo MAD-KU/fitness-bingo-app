@@ -6,7 +6,6 @@ import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
-import '../signin_screen.dart';
 
 class UserDashboardScreen extends StatefulWidget {
   const UserDashboardScreen({Key? key}) : super(key: key);
@@ -19,7 +18,6 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch achievements for the current user when the dashboard is initialized
     _fetchAchievements();
   }
 
