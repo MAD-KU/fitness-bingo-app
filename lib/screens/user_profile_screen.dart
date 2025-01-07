@@ -26,7 +26,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
     currentUser = authController.currentUser!;
 
-    // Fetch achievements for the current user
     final currentUserId = authController.currentUser?.id;
     if (currentUserId != null) {
       Provider.of<AchievementController>(context, listen: false)
@@ -87,7 +86,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 onTap: () {},
               ),
               const SizedBox(height: 20),
-              // Achievements Section
               Consumer<AchievementController>(
                 builder: (context, achievementController, child) {
                   if (achievementController.isLoading) {
@@ -100,8 +98,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   }
 
                   if (achievementController.achievements.isEmpty) {
-                    return const Center(
-                        child: Text("No achievements yet."));
+                    return const Center(child: Text("No achievements yet."));
                   }
 
                   return Column(
@@ -120,12 +117,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         itemCount: achievementController.achievements.length,
                         itemBuilder: (context, index) {
                           final achievement =
-                          achievementController.achievements[index];
+                              achievementController.achievements[index];
                           return ListTile(
                             leading: Icon(Icons.star, color: Colors.amber),
-                            title: Text(achievement.title ?? 'No Title'),
-                            subtitle: Text(
-                                achievement.description ?? 'No Description'),
+                            title: Text(achievement.achievement ?? 'No Title'),
+                            subtitle: Text(achievement.achievedAt
+                                    .toString()
+                                    .split(' ')[0] ??
+                                'No Date'),
                           );
                         },
                       ),

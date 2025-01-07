@@ -8,7 +8,7 @@ class TrackActivityModel {
   bool? isTodayCompleted;
   int? totalCompletes;
   DateTime? createdAt;
-  DateTime? updatedAt; // Add updatedAt
+  DateTime? updatedAt;
 
   TrackActivityModel({
     this.id,
@@ -29,7 +29,7 @@ class TrackActivityModel {
     isTodayCompleted = json['isTodayCompleted'];
     totalCompletes = json['totalCompletes'];
     createdAt = (json['createdAt'] as Timestamp).toDate();
-    updatedAt = (json['updatedAt'] as Timestamp).toDate(); // Handle timestamps
+    updatedAt = (json['updatedAt'] as Timestamp).toDate();
   }
 
   Map<String, dynamic> toJson() {

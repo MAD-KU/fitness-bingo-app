@@ -7,14 +7,12 @@ class TrackActivityController extends ChangeNotifier {
   final TrackBingoCardController trackBingoCardController =
       TrackBingoCardController();
 
-  // State variables
   List<String> _todayMarkedActivities = [];
   List<TrackActivityModel> _allActivities = [];
   TrackActivityModel? _trackActivity;
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
   List<String> get todayMarkedActivities => _todayMarkedActivities;
 
   List<TrackActivityModel> get allActivities => _allActivities;
@@ -25,7 +23,6 @@ class TrackActivityController extends ChangeNotifier {
 
   String? get errorMessage => _errorMessage;
 
-  // Toggle Activity Mark with Points System
   Future<void> toggleActivityMark(TrackActivityModel trackActivity) async {
     try {
       _setLoading(true);
@@ -65,7 +62,6 @@ class TrackActivityController extends ChangeNotifier {
           await _updatePoints(trackActivity.userId!, 10);
         }
       } else {
-        // Create a new entry
         trackActivity.createdAt = DateTime.now();
         trackActivity.updatedAt = DateTime.now();
         trackActivity.totalCompletes = 1;
@@ -94,7 +90,6 @@ class TrackActivityController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Fetch Marked Activities
   Future<void> getMarkedActivities(String userId, String bingoCardId) async {
     try {
       _setLoading(true);
@@ -122,7 +117,6 @@ class TrackActivityController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Update isTodayCompleted based on updatedAt (Date Check Only)
   Future<void> updateIsTodayCompleted() async {
     try {
       _setLoading(true);
@@ -154,7 +148,6 @@ class TrackActivityController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Update Points System
   Future<void> _updatePoints(String userId, int points) async {
     try {
       DocumentReference userDoc =
@@ -176,7 +169,6 @@ class TrackActivityController extends ChangeNotifier {
   }
 
   void _updateAchievement(int points, String userId) async {
-    // Define achievement levels
     final List<Map<String, dynamic>> achievementLevels = [
       {"title": "Bronze Medal", "pointsRequired": 1000},
       {"title": "Silver Medal", "pointsRequired": 3000},
@@ -185,25 +177,22 @@ class TrackActivityController extends ChangeNotifier {
       {"title": "Diamond Medal", "pointsRequired": 10000},
     ];
 
-    // Find the highest achievement for the given points
     String? achievement;
     for (var level in achievementLevels) {
       if (points >= level['pointsRequired']) {
-        achievement = level['title']; // Assign achievement if points meet the requirement
+        achievement = level['title'];
       }
     }
 
     if (achievement != null) {
       try {
-        // Save the achievement in 'achievements' collection
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection('achievements')
             .where('userId', isEqualTo: userId)
-            .where('achievement', isEqualTo: achievement) // Check if already saved
+            .where('achievement', isEqualTo: achievement)
             .get();
 
         if (querySnapshot.docs.isEmpty) {
-          // Save only if the achievement is not already saved
           await FirebaseFirestore.instance.collection('achievements').add({
             'userId': userId,
             'achievement': achievement,
@@ -216,7 +205,6 @@ class TrackActivityController extends ChangeNotifier {
     }
   }
 
-  // Helper Method - Set Loading State
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();

@@ -43,7 +43,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
               const SizedBox(height: 30),
               GridView.count(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(), // Added
+                physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
@@ -101,11 +101,11 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   }
 
   Widget _buildDashboardCard(
-      BuildContext context, {
-        required IconData icon,
-        required String title,
-        required VoidCallback onTap,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -166,7 +166,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
         }
 
         if (achievementController.achievements.isEmpty) {
-          return SizedBox.shrink(); // Don't show the section if no achievements
+          return SizedBox.shrink();
         }
 
         return Column(
@@ -183,14 +183,14 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
               ),
             ),
             SizedBox(
-              height: 150, // Adjust height as needed
+              height: 150,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: achievementController.achievements.length,
                 itemBuilder: (context, index) {
                   final achievement = achievementController.achievements[index];
                   return Container(
-                    width: 200, // Adjust width as needed
+                    width: 200,
                     margin: EdgeInsets.all(8),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -203,7 +203,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                         Icon(Icons.star, color: Colors.amber, size: 24),
                         SizedBox(height: 8),
                         Text(
-                          achievement.title ?? 'No Title',
+                          achievement.achievement ?? 'No Title',
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
@@ -212,16 +212,14 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          achievement.description ?? 'No Description',
+                          achievement.achievedAt.toString().split(' ')[0],
                           style: TextStyle(
-                            color: Theme.of(context)
-                                .primaryColor
-                                .withOpacity(0.8),
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.8),
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        // Add more details if necessary
                       ],
                     ),
                   );
