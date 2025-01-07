@@ -1,10 +1,20 @@
 import 'package:application/controllers/bingocard_controller.dart';
-import 'package:application/screens/admin/activity/manage_activities_screen.dart';
+import 'package:application/screens/admin/activity/manage_activities_screen.dart'
+    as ManageActivitiesAdminScreen;
+import 'package:application/screens/user/activity/manage_activities_screen.dart'
+    as ManageActivitiesUserScreen;
+
 import 'package:application/screens/admin/bingo_card/bingo_card_edit_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:application/models/bingocard_model.dart';
 import 'package:provider/provider.dart';
+
+import '../../../controllers/auth_controller.dart';
+import '../../../controllers/track_bingocard_controller.dart';
+import '../../../models/user_model.dart';
+
+// ManageActivitiesScreen
 
 class BingoCardDetailsScreen extends StatefulWidget {
   final BingoCardModel bingoCard;
@@ -17,16 +27,25 @@ class BingoCardDetailsScreen extends StatefulWidget {
 }
 
 class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
+  late AuthController authController;
   late BingoCardController bingoCardController;
+  late TrackBingoCardController trackBingoCardController;
+  late UserModel user;
   String? userId = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void initState() {
     super.initState();
+    authController = Provider.of<AuthController>(context, listen: false);
+    user = authController.currentUser!;
     bingoCardController =
         Provider.of<BingoCardController>(context, listen: false);
 
     bingoCardController.getBingoCardById(widget.bingoCard.id!);
+
+    trackBingoCardController =
+        Provider.of<TrackBingoCardController>(context, listen: false);
+    trackBingoCardController.getMarkedBingoCards(userId!);
   }
 
   @override
@@ -148,13 +167,30 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ManageActivitiesScreen(
-                                          bingoCard: widget.bingoCard,
-                                        )));
+                            if (user.role == "admin") {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ManageActivitiesAdminScreen
+                                              .ManageActivitiesScreen(
+                                            bingoCard: widget.bingoCard,
+                                          )));
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ManageActivitiesUserScreen
+                                              .ManageActivitiesScreen(
+                                            bingoCard: widget.bingoCard,
+                                          )));
+                            }
+
+                            trackBingoCardController
+                                .getMarkedBingoCards(userId!);
+
+                            setState(() {});
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),

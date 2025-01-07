@@ -4,6 +4,8 @@ import 'package:application/controllers/article_controller.dart';
 import 'package:application/controllers/auth_controller.dart';
 import 'package:application/controllers/bingocard_controller.dart';
 import 'package:application/controllers/chathistory_controller.dart';
+import 'package:application/controllers/track_activity_controller.dart';
+import 'package:application/controllers/track_bingocard_controller.dart';
 import 'package:application/screens/signin_screen.dart';
 import 'package:application/screens/splash_screen.dart';
 import 'package:application/themes/theme.dart';
@@ -24,12 +26,15 @@ void main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AuthController()),
-    ChangeNotifierProvider(create: (context) => UserController()), // Add UserController
+    ChangeNotifierProvider(create: (context) => UserController()),
+    // Add UserController
     ChangeNotifierProvider(create: (context) => BingoCardController()),
     ChangeNotifierProvider(create: (context) => ActivityController()),
     ChangeNotifierProvider(create: (context) => ArticleController()),
     ChangeNotifierProvider(create: (context) => AchievementController()),
     ChangeNotifierProvider(create: (context) => ChatHistoryController()),
+    ChangeNotifierProvider(create: (context) => TrackActivityController()),
+    ChangeNotifierProvider(create: (context) => TrackBingoCardController()),
   ], child: const MyApp()));
 }
 
