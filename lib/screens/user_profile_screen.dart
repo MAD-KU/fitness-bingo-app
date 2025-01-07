@@ -26,7 +26,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
     currentUser = authController.currentUser!;
 
-    // Fetch achievements for the current user only if not admin
     final currentUserId = authController.currentUser?.id;
     if (currentUserId != null && currentUser.role != "admin") {
       Provider.of<AchievementController>(context, listen: false)
@@ -113,9 +112,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             return ListTile(
                               leading:
                               Icon(Icons.star, color: Colors.amber),
-                              title: Text(achievement.title ?? 'No Title'),
+                              title: Text(achievement.achievement ?? 'No Title'),
                               subtitle: Text(
-                                  achievement.description ?? 'No Description'),
+                                  achievement.achievedAt.toString().split(" ")[0] ?? 'No Description'),
                             );
                           },
                         ),
@@ -136,7 +135,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {},
               ),
-              const SizedBox(height: 20),
+
+
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Sign Out'),

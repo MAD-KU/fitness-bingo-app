@@ -1,13 +1,15 @@
+import 'package:application/controllers/bingocard_controller.dart';
+import 'package:application/models/bingocard_model.dart';
+import 'package:application/screens/admin/bingo_card/add_bingo_card_screen.dart';
+import 'package:application/screens/admin/bingo_card/bingo_card_details_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:application/controllers/bingocard_controller.dart';
-import 'package:application/models/bingocard_model.dart';
 
 import '../../../controllers/auth_controller.dart';
+import '../../../controllers/track_bingocard_controller.dart';
+import '../../../models/track_bingocard_model.dart';
 import '../../../models/user_model.dart';
-import '../../admin/bingo_card/add_bingo_card_screen.dart';
-import '../../admin/bingo_card/bingo_card_details_screen.dart';
 
 class UserBingoCardsScreen extends StatefulWidget {
   const UserBingoCardsScreen({Key? key}) : super(key: key);
@@ -18,6 +20,7 @@ class UserBingoCardsScreen extends StatefulWidget {
 
 class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
   late BingoCardController bingoCardController;
+  late TrackBingoCardController trackBingoCardController;
   late UserModel user;
   String? userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -26,7 +29,10 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
     super.initState();
     bingoCardController =
         Provider.of<BingoCardController>(context, listen: false);
+    trackBingoCardController =
+        Provider.of<TrackBingoCardController>(context, listen: false);
     bingoCardController.getAllBingoCardsForUser(userId!);
+    trackBingoCardController.getMarkedBingoCards(userId!);
     user = Provider.of<AuthController>(context, listen: false).currentUser!;
   }
 
@@ -34,12 +40,12 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Bingo Cards'),
+        title: const Text('My Bingo Cards users'),
         backgroundColor: Colors.transparent,
       ),
-      body: Consumer<BingoCardController>(
-        builder: (context, controller, child) {
-          if (controller.isLoading) {
+      body: Consumer2<BingoCardController, TrackBingoCardController>(
+        builder: (context, controller, trackCtrl, child) {
+          if (controller.isLoading || trackCtrl.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -71,9 +77,15 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
                       );
                     },
                     image: user.imageUrl,
+                    isHideMark: true,
+                    onMarkChanged: (bool? value) {},
                   );
                 } else {
                   BingoCardModel card = controller.bingoCards[index];
+
+                  bool isMarked =
+                      trackCtrl.todayMarkedBingoCards.contains(card.id);
+
                   return _buildDashboardCard(
                     context,
                     icon: Icons.card_giftcard,
@@ -90,6 +102,20 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
                     },
                     image:
                         card.imageUrl!.contains("http") ? card.imageUrl : null,
+                    isMarked: isMarked,
+                    isHideMark: !isMarked,
+                    onMarkChanged: (bool? value) {
+                      // trackBingoCardController.toggleBingoCardMark(
+                      //   TrackBingoCardModel(
+                      //     userId: userId,
+                      //     bingoCardId: card.id!,
+                      //     isTodayCompleted: value,
+                      //     totalCompletes: 0,
+                      //     createdAt: DateTime.now(),
+                      //     updatedAt: DateTime.now(),
+                      //   ),
+                      // );
+                    },
                   );
                 }
               },
@@ -100,11 +126,16 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
     );
   }
 
-  Widget _buildDashboardCard(BuildContext context,
-      {required IconData icon,
-      required String title,
-      required VoidCallback onTap,
-      String? image}) {
+  Widget _buildDashboardCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    required String? image,
+    bool isHideMark = false,
+    bool isMarked = false,
+    required ValueChanged<bool?> onMarkChanged,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -129,11 +160,9 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
               offset: const Offset(0, 3),
             ),
           ],
-          image: image != null
+          image: image != null && image.isNotEmpty
               ? DecorationImage(
-                  image: image.contains('http')
-                      ? NetworkImage(image)
-                      : AssetImage(image) as ImageProvider,
+                  image: NetworkImage(image),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.7),
@@ -158,6 +187,13 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w700),
             ),
+            const SizedBox(height: 10),
+            if (!isHideMark)
+              Checkbox(
+                value: isMarked,
+                onChanged: onMarkChanged,
+                activeColor: Theme.of(context).primaryColor,
+              ),
           ],
         ),
       ),

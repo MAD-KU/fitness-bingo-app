@@ -2,6 +2,8 @@ import 'package:application/screens/user/user_dashboard_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import '../controllers/track_activity_controller.dart';
 import 'admin/admin_dashboard_screen.dart';
 import 'signin_screen.dart';
 
@@ -16,6 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    Provider.of<TrackActivityController>(context, listen: false).updateIsTodayCompleted();
     _navigateToNextScreen();
   }
 
