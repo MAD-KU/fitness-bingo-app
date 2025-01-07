@@ -86,7 +86,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       Icons.security,
                     ),
                     const SizedBox(height: 24),
-                    _buildAdminActions(context, user),
+                    // Removed _buildAdminActions
                   ],
                 ),
               );
@@ -146,56 +146,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildAdminActions(BuildContext context, UserModel user) {
-    return Column(
-      children: [
-        ElevatedButton.icon(
-          onPressed: () {
-            _showDeleteConfirmationDialog(context, user);
-          },
-          icon: const Icon(Icons.delete_forever),
-          label: const Text('Delete User'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red[700],
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showDeleteConfirmationDialog(BuildContext context, UserModel user) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Delete",
-              style: TextStyle(color: Theme.of(context).primaryColor)),
-          content: Text("Are you sure you want to delete user ${user.name}?",
-              style: TextStyle(color: Theme.of(context).primaryColor)),
-          backgroundColor: Colors.grey[800],
-          actions: <Widget>[
-            TextButton(
-              child: Text("Cancel",
-                  style: TextStyle(color: Theme.of(context).primaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text("Delete",
-                  style: TextStyle(color: Theme.of(context).primaryColor)),
-              onPressed: () {
-                // Implement delete user logic
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
