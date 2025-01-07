@@ -100,8 +100,53 @@ class TrackBingoCardController extends ChangeNotifier {
     if (pointsSnapshot.exists) {
       int currentPoints = pointsSnapshot['points'] ?? 0;
       await pointsRef.update({'points': currentPoints + points});
+      _updateAchievement(currentPoints + points, userId);
     } else {
       await pointsRef.set({'points': points, 'userId': userId});
+      _updateAchievement(points, userId);
+    }
+  }
+
+  void _updateAchievement(int points, String userId) async {
+    // Define achievement levels
+    final List<Map<String, dynamic>> achievementLevels = [
+      {"title": "Bronze Medal", "pointsRequired": 1000},
+      {"title": "Silver Medal", "pointsRequired": 3000},
+      {"title": "Gold Medal", "pointsRequired": 5000},
+      {"title": "Platinum Medal", "pointsRequired": 8000},
+      {"title": "Diamond Medal", "pointsRequired": 10000},
+    ];
+
+    // Find the highest achievement for the given points
+    String? achievement;
+    for (var level in achievementLevels) {
+      if (points >= level['pointsRequired']) {
+        achievement =
+            level['title']; // Assign achievement if points meet the requirement
+      }
+    }
+
+    if (achievement != null) {
+      try {
+        // Save the achievement in 'achievements' collection
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('achievements')
+            .where('userId', isEqualTo: userId)
+            .where('achievement',
+                isEqualTo: achievement) // Check if already saved
+            .get();
+
+        if (querySnapshot.docs.isEmpty) {
+          // Save only if the achievement is not already saved
+          await FirebaseFirestore.instance.collection('achievements').add({
+            'userId': userId,
+            'achievement': achievement,
+            'achievedAt': DateTime.now(),
+          });
+        }
+      } catch (e) {
+        print('Error updating achievement: $e');
+      }
     }
   }
 
