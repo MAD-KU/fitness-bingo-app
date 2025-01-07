@@ -26,9 +26,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
     currentUser = authController.currentUser!;
 
-    // Fetch achievements for the current user
+    // Fetch achievements for the current user only if not admin
     final currentUserId = authController.currentUser?.id;
-    if (currentUserId != null) {
+    if (currentUserId != null && currentUser.role != "admin") {
       Provider.of<AchievementController>(context, listen: false)
           .fetchAchievementsForUser(currentUserId);
     }
@@ -74,6 +74,56 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Achievements Section (Conditional)
+              if (currentUser.role != "admin")
+                Consumer<AchievementController>(
+                  builder: (context, achievementController, child) {
+                    if (achievementController.isLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (achievementController.errorMessage.isNotEmpty) {
+                      return Center(
+                          child: Text(achievementController.errorMessage));
+                    }
+
+                    if (achievementController.achievements.isEmpty) {
+                      return const Center(
+                          child: Text("No achievements yet."));
+                    }
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "Achievements",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: achievementController.achievements.length,
+                          itemBuilder: (context, index) {
+                            final achievement =
+                            achievementController.achievements[index];
+                            return ListTile(
+                              leading:
+                              Icon(Icons.star, color: Colors.amber),
+                              title: Text(achievement.title ?? 'No Title'),
+                              subtitle: Text(
+                                  achievement.description ?? 'No Description'),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+
               ListTile(
                 leading: const Icon(Icons.edit),
                 title: const Text('Edit profile'),
@@ -87,53 +137,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 onTap: () {},
               ),
               const SizedBox(height: 20),
-              // Achievements Section
-              Consumer<AchievementController>(
-                builder: (context, achievementController, child) {
-                  if (achievementController.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (achievementController.errorMessage.isNotEmpty) {
-                    return Center(
-                        child: Text(achievementController.errorMessage));
-                  }
-
-                  if (achievementController.achievements.isEmpty) {
-                    return const Center(
-                        child: Text("No achievements yet."));
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          "Achievements",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: achievementController.achievements.length,
-                        itemBuilder: (context, index) {
-                          final achievement =
-                          achievementController.achievements[index];
-                          return ListTile(
-                            leading: Icon(Icons.star, color: Colors.amber),
-                            title: Text(achievement.title ?? 'No Title'),
-                            subtitle: Text(
-                                achievement.description ?? 'No Description'),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              ),
-
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Sign Out'),
