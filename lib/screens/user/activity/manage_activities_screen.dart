@@ -30,7 +30,6 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
   void initState() {
     super.initState();
 
-    // Initialize controllers
     activityController =
         Provider.of<ActivityController>(context, listen: false);
     trackActivityController =
@@ -38,7 +37,6 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
     trackBingoCardController =
         Provider.of<TrackBingoCardController>(context, listen: false);
 
-    // Fetch activities and marked states
     activityController.getAllActivities(widget.bingoCard.id!);
     trackActivityController.getMarkedActivities(userId!, widget.bingoCard.id!);
   }
@@ -98,7 +96,6 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
                         ActivityModel activity =
                             activityCtrl.activities[index - 1];
 
-                        // Check if the activity is already marked
                         bool isMarked = trackCtrl.todayMarkedActivities
                             .contains(activity.id);
 
@@ -118,7 +115,6 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
                           image: activity.imageUrl ?? '',
                           isMarked: isMarked,
                           onMarkChanged: (bool? value) {
-                            // Toggle mark/unmark
                             trackCtrl.toggleActivityMark(
                               TrackActivityModel(
                                 userId: userId,
@@ -147,7 +143,6 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
     );
   }
 
-  // Activity Card Widget
   Widget _buildActivityCard(BuildContext context,
       {required IconData icon,
       required String title,

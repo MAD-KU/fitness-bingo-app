@@ -32,7 +32,7 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
     trackBingoCardController =
         Provider.of<TrackBingoCardController>(context, listen: false);
     bingoCardController.getAllBingoCardsForUser(userId!);
-    trackBingoCardController.getMarkedBingoCards(userId!); // Load marked cards
+    trackBingoCardController.getMarkedBingoCards(userId!);
     user = Provider.of<AuthController>(context, listen: false).currentUser!;
   }
 

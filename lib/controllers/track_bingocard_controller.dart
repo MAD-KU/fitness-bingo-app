@@ -4,14 +4,12 @@ import 'package:flutter/cupertino.dart';
 import '../models/track_bingocard_model.dart';
 
 class TrackBingoCardController extends ChangeNotifier {
-  // State variables
   List<String> _todayMarkedBingoCards = [];
   List<TrackBingoCardModel> _allBingoCards = [];
   TrackBingoCardModel? _trackBingoCard;
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
   List<String> get todayMarkedBingoCards => _todayMarkedBingoCards;
 
   List<TrackBingoCardModel> get allBingoCards => _allBingoCards;
@@ -22,11 +20,9 @@ class TrackBingoCardController extends ChangeNotifier {
 
   String? get errorMessage => _errorMessage;
 
-  // Update Bingo Card Status
   Future<void> updateBingoCardStatus(String bingoCardId, String userId) async {
     _setLoading(true);
     try {
-      // Check if all activities are completed
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
           .collection('trackActivities')
@@ -37,7 +33,6 @@ class TrackBingoCardController extends ChangeNotifier {
       bool allCompleted =
           snapshot.docs.every((doc) => doc['isTodayCompleted'] == true);
 
-      // Fetch trackBingoCard for the given bingoCardId and userId
       QuerySnapshot<Map<String, dynamic>> trackBingoSnapshot =
           await FirebaseFirestore.instance
               .collection('trackBingoCards')
@@ -46,7 +41,6 @@ class TrackBingoCardController extends ChangeNotifier {
               .get();
 
       if (trackBingoSnapshot.docs.isNotEmpty) {
-        // Update existing record
         await FirebaseFirestore.instance
             .collection('trackBingoCards')
             .doc(trackBingoSnapshot.docs.first.id)
@@ -60,13 +54,12 @@ class TrackBingoCardController extends ChangeNotifier {
 
         if (allCompleted) {
           _todayMarkedBingoCards.add(bingoCardId);
-          await _updateUserPoints(userId, 50); // Add 50 points
+          await _updateUserPoints(userId, 50);
         } else {
           _todayMarkedBingoCards.remove(bingoCardId);
           await _updateUserPoints(userId, -50);
         }
       } else {
-        // Create new record if it doesn't exist
         await FirebaseFirestore.instance.collection('trackBingoCards').add({
           'bingoCardId': bingoCardId,
           'userId': userId,
@@ -78,7 +71,7 @@ class TrackBingoCardController extends ChangeNotifier {
 
         if (allCompleted) {
           _todayMarkedBingoCards.add(bingoCardId);
-          await _updateUserPoints(userId, 50); // Add 50 points
+          await _updateUserPoints(userId, 50);
         }
       }
 
@@ -91,7 +84,6 @@ class TrackBingoCardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Update User Points
   Future<void> _updateUserPoints(String userId, int points) async {
     DocumentReference pointsRef =
         FirebaseFirestore.instance.collection('points').doc(userId);
@@ -108,7 +100,6 @@ class TrackBingoCardController extends ChangeNotifier {
   }
 
   void _updateAchievement(int points, String userId) async {
-    // Define achievement levels
     final List<Map<String, dynamic>> achievementLevels = [
       {"title": "Bronze Medal", "pointsRequired": 1000},
       {"title": "Silver Medal", "pointsRequired": 3000},
@@ -117,27 +108,24 @@ class TrackBingoCardController extends ChangeNotifier {
       {"title": "Diamond Medal", "pointsRequired": 10000},
     ];
 
-    // Find the highest achievement for the given points
     String? achievement;
     for (var level in achievementLevels) {
       if (points >= level['pointsRequired']) {
         achievement =
-            level['title']; // Assign achievement if points meet the requirement
+            level['title'];
       }
     }
 
     if (achievement != null) {
       try {
-        // Save the achievement in 'achievements' collection
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection('achievements')
             .where('userId', isEqualTo: userId)
             .where('achievement',
-                isEqualTo: achievement) // Check if already saved
+                isEqualTo: achievement)
             .get();
 
         if (querySnapshot.docs.isEmpty) {
-          // Save only if the achievement is not already saved
           await FirebaseFirestore.instance.collection('achievements').add({
             'userId': userId,
             'achievement': achievement,
@@ -150,7 +138,6 @@ class TrackBingoCardController extends ChangeNotifier {
     }
   }
 
-  // Fetch Marked Bingo Cards
   Future<void> getMarkedBingoCards(String userId) async {
     try {
       _setLoading(true);
@@ -179,7 +166,6 @@ class TrackBingoCardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Helper Method - Set Loading State
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
