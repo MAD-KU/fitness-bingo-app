@@ -1,7 +1,7 @@
 import 'package:application/screens/admin/store_screen.dart';
 import 'package:application/screens/admin/bingo_card/manage_bingo_cards_screen.dart';
 import 'package:application/screens/admin/article/manage_articles_screen.dart';
-import 'package:application/screens/admin/manage_user/manage_users_screen.dart'; // Import ManageUsersScreen
+import 'package:application/screens/admin/manage_user/manage_users_screen.dart';
 import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +39,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ManageUsersScreen()), // Navigate to ManageUsersScreen
+                            builder: (context) => const ManageUsersScreen()),
                       );
                     },
                   ),

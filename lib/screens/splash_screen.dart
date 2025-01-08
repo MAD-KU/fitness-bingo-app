@@ -1,3 +1,4 @@
+import 'package:application/controllers/track_bingocard_controller.dart';
 import 'package:application/screens/user/user_dashboard_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Provider.of<TrackActivityController>(context, listen: false).updateIsTodayCompleted();
+    Provider.of<TrackBingoCardController>(context, listen: false).updateBingoCardIsTodayCompleted();
     _navigateToNextScreen();
   }
 

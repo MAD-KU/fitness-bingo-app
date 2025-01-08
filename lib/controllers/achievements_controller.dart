@@ -48,37 +48,36 @@ class AchievementController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Fetch users, excluding admins
-      QuerySnapshot usersSnapshot = await _firestore.collection('users').where('role', isNotEqualTo: 'admin').get();
+      QuerySnapshot usersSnapshot = await _firestore
+          .collection('users')
+          .where('role', isNotEqualTo: 'admin')
+          .get();
 
-      // Create a list to hold the leaderboard entries
       List<LeaderboardEntry> entries = [];
 
-      // Iterate through each user and calculate their score
       for (var userDoc in usersSnapshot.docs) {
         String userId = userDoc.id;
 
-        // Fetch achievements for the current user
-        QuerySnapshot achievementsSnapshot = await _firestore
-            .collection('achievements')
+        QuerySnapshot pointsSnapshot = await _firestore
+            .collection('points')
             .where('userId', isEqualTo: userId)
             .get();
 
-        // Calculate the total score for the user (e.g., number of achievements)
-        int totalScore = achievementsSnapshot.docs.length;
+        int totalPoints = pointsSnapshot.docs.isNotEmpty
+            ? pointsSnapshot.docs.first.get('points') ?? 0
+            : 0;
 
-        // Add the user and their score to the list
-        entries.add(LeaderboardEntry(
-          userId: userId,
-          userName: userDoc.get('name') ?? 'Unknown',
-          score: totalScore,
-        ));
+        if (totalPoints > 0) {
+          entries.add(LeaderboardEntry(
+            userId: userId,
+            userName: userDoc.get('name') ?? 'Unknown',
+            score: totalPoints,
+          ));
+        }
       }
 
-      // Sort the entries by score in descending order
       entries.sort((a, b) => b.score.compareTo(a.score));
 
-      // Update the leaderboard entries
       _leaderboardEntries = entries;
     } catch (e) {
       _errorMessage = "Error fetching leaderboard data: $e";
@@ -87,6 +86,7 @@ class AchievementController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 }
 
 class LeaderboardEntry {
