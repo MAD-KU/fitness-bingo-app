@@ -20,6 +20,7 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
   late TextEditingController _imageUrlController;
   late TextEditingController _brandController;
   late TextEditingController _ratingController;
+  late TextEditingController _affiliateUrlController;
   String _selectedCategory = 'Cardio Equipment';
   bool _isAvailable = true;
 
@@ -35,6 +36,7 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
     _descriptionController = TextEditingController();
     _priceController = TextEditingController();
     _imageUrlController = TextEditingController();
+    _affiliateUrlController = TextEditingController();
     _brandController = TextEditingController();
     _ratingController = TextEditingController();
   }
@@ -44,6 +46,7 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
     _descriptionController.clear();
     _priceController.clear();
     _imageUrlController.clear();
+    _affiliateUrlController.clear();
     _brandController.clear();
     _ratingController.clear();
     _selectedCategory = 'Cardio Equipment';
@@ -56,6 +59,7 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
       _descriptionController.text = item.description ?? '';
       _priceController.text = item.price?.toString() ?? '';
       _imageUrlController.text = item.imageUrl ?? '';
+      _affiliateUrlController.text = item.affiliateUrl ?? '';
       _brandController.text = item.brand ?? '';
       _ratingController.text = item.rating?.toString() ?? '';
       _selectedCategory = item.category ?? 'Cardio Equipment';
@@ -80,13 +84,15 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _nameController,
-                    style: const TextStyle(color: Colors.white), // Ensure text is white
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
                     decoration: InputDecoration(
                       labelText: 'Name',
                       labelStyle: TextStyle(color: Colors.greenAccent[700]),
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                        borderSide:
+                            BorderSide(color: Colors.greenAccent, width: 2),
                       ),
                       contentPadding: EdgeInsets.all(16),
                     ),
@@ -96,13 +102,15 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _descriptionController,
-                    style: const TextStyle(color: Colors.white), // Ensure text is white
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
                     decoration: InputDecoration(
                       labelText: 'Description',
                       labelStyle: TextStyle(color: Colors.greenAccent[700]),
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                        borderSide:
+                            BorderSide(color: Colors.greenAccent, width: 2),
                       ),
                       contentPadding: EdgeInsets.all(16),
                     ),
@@ -113,13 +121,15 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _priceController,
-                    style: const TextStyle(color: Colors.white), // Ensure text is white
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
                     decoration: InputDecoration(
                       labelText: 'Price',
                       labelStyle: TextStyle(color: Colors.greenAccent[700]),
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                        borderSide:
+                            BorderSide(color: Colors.greenAccent, width: 2),
                       ),
                       contentPadding: EdgeInsets.all(16),
                     ),
@@ -130,13 +140,33 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _imageUrlController,
-                    style: const TextStyle(color: Colors.white), // Ensure text is white
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
                     decoration: InputDecoration(
                       labelText: 'Image URL',
                       labelStyle: TextStyle(color: Colors.greenAccent[700]),
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                        borderSide:
+                            BorderSide(color: Colors.greenAccent, width: 2),
+                      ),
+                      contentPadding: EdgeInsets.all(16),
+                    ),
+                    validator: (value) =>
+                        value?.isEmpty ?? true ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _affiliateUrlController,
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
+                    decoration: InputDecoration(
+                      labelText: 'External URL',
+                      labelStyle: TextStyle(color: Colors.greenAccent[700]),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.greenAccent, width: 2),
                       ),
                       contentPadding: EdgeInsets.all(16),
                     ),
@@ -146,13 +176,15 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _brandController,
-                    style: const TextStyle(color: Colors.white), // Ensure text is white
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
                     decoration: InputDecoration(
                       labelText: 'Brand',
                       labelStyle: TextStyle(color: Colors.greenAccent[700]),
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                        borderSide:
+                            BorderSide(color: Colors.greenAccent, width: 2),
                       ),
                       contentPadding: EdgeInsets.all(16),
                     ),
@@ -162,13 +194,15 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _ratingController,
-                    style: const TextStyle(color: Colors.white), // Ensure text is white
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
                     decoration: InputDecoration(
                       labelText: 'Rating (0-5)',
                       labelStyle: TextStyle(color: Colors.greenAccent[700]),
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                        borderSide:
+                            BorderSide(color: Colors.greenAccent, width: 2),
                       ),
                       contentPadding: EdgeInsets.all(16),
                     ),
@@ -185,7 +219,8 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   const SizedBox(height: 20),
                   DropdownButtonFormField<String>(
                     value: _selectedCategory,
-                    style: const TextStyle(color: Colors.white), // Ensure text is white
+                    style: const TextStyle(color: Colors.white),
+                    // Ensure text is white
                     decoration: InputDecoration(
                       labelText: 'Category',
                       labelStyle: TextStyle(color: Colors.greenAccent[700]),
@@ -248,6 +283,7 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                   description: _descriptionController.text,
                   price: double.parse(_priceController.text),
                   imageUrl: _imageUrlController.text,
+                  affiliateUrl: _affiliateUrlController.text,
                   category: _selectedCategory,
                   brand: _brandController.text,
                   rating: double.tryParse(_ratingController.text),
@@ -415,7 +451,7 @@ class _AdminStoreScreenState extends State<AdminStoreScreen> {
                           StoreItemCard(item: item),
                           Positioned(
                             top: 8,
-                            right: 8,
+                            right: 56,
                             child: Row(
                               children: [
                                 CircleAvatar(

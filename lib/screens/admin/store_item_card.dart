@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../controllers/store_controller.dart';
 import '../../models/store_model.dart';
 import 'store_item_detail_screen.dart';
@@ -54,17 +55,25 @@ class StoreItemCard extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top: 8,
-                      right: 8,
+                      top: 0,
+                      right: 0,
                       child: IconButton(
                         icon: const Icon(
                           Icons.shopping_cart,
                           color: Colors.white,
                           size: 20,
                         ),
-                        onPressed: () {
-                          Provider.of<StoreController>(context, listen: false)
-                              .launchAmazonUrl(item.affiliateUrl);
+                        onPressed: () async {
+                          final Uri url = Uri.parse(item.affiliateUrl!);
+
+                          try {
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(url,
+                                  mode: LaunchMode.externalApplication);
+                            }
+                          } catch (e) {
+                            print('Error: $e');
+                          }
                         },
                         style: IconButton.styleFrom(
                           backgroundColor: theme.primaryColor.withOpacity(0.8),
@@ -79,7 +88,8 @@ class StoreItemCard extends StatelessWidget {
               // Product Details
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
