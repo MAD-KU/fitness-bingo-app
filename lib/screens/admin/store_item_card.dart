@@ -32,107 +32,100 @@ class StoreItemCard extends StatelessWidget {
           );
         },
         child: SizedBox(
-          height: 280, // Fixed height to prevent overflow
+          width: double.infinity,
+          height: 211.1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Product Image
-              AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                  ),
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        item.imageUrl ?? 'https://via.placeholder.com/150',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.error,
-                          color: theme.primaryColor,
+              SizedBox(
+                height: 128, // Adjusted height
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    Image.network(
+                      item.imageUrl ?? 'https://via.placeholder.com/150',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.error,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          Provider.of<StoreController>(context, listen: false)
+                              .launchAmazonUrl(item.affiliateUrl);
+                        },
+                        style: IconButton.styleFrom(
+                          backgroundColor: theme.primaryColor.withOpacity(0.8),
+                          padding: const EdgeInsets.all(6),
                         ),
                       ),
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.shopping_cart,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            Provider.of<StoreController>(context, listen: false)
-                                .launchAmazonUrl(item.affiliateUrl);
-                          },
-                          style: IconButton.styleFrom(
-                            backgroundColor: theme.primaryColor.withOpacity(0.8),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
               // Product Details
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Product Name
-                      Text(
-                        item.name ?? 'No name',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-
-                      const SizedBox(height: 2),
-
-                      // Brand
-                      if (item.brand != null)
-                        Text(
-                          item.brand!,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.hintColor,
-                            fontSize: 12,
+                      // Product Name and Price Row
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              item.name ?? 'No name',
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '\$${item.price?.toStringAsFixed(2) ?? '0.00'}',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              color: theme.primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
 
                       const SizedBox(height: 2),
 
-                      // Price
-                      Text(
-                        '\$${item.price?.toStringAsFixed(2) ?? '0.00'}',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const Spacer(),
-
-                      // Rating and Prime Badge
+                      // Rating and Prime Badge Row
                       Row(
                         children: [
                           if (item.rating != null) ...[
-                            Icon(
+                            const Icon(
                               Icons.star,
-                              size: 16,
+                              size: 12,
                               color: Colors.amber,
                             ),
                             Text(
                               ' ${item.rating}',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontSize: 12,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
                               ),
                             ),
                             const Spacer(),
@@ -140,18 +133,18 @@ class StoreItemCard extends StatelessWidget {
                           if (item.primeEligible == 'Yes')
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
+                                horizontal: 4,
+                                vertical: 1,
                               ),
                               decoration: BoxDecoration(
                                 color: theme.primaryColor,
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(2),
                               ),
                               child: Text(
                                 'Prime',
                                 style: TextStyle(
                                   color: theme.scaffoldBackgroundColor,
-                                  fontSize: 10,
+                                  fontSize: 8,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
