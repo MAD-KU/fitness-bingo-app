@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:application/widgets/chat_widget.dart'; // Import your ChatWidget
+import 'package:application/screens/user/user_store_screen.dart';
 
 class UserDashboardScreen extends StatefulWidget {
   const UserDashboardScreen({Key? key}) : super(key: key);
@@ -96,7 +97,12 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                         context,
                         icon: Icons.store,
                         title: 'Store',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserStoreScreen()));
+                        },
                       ),
                     ],
                   ),
