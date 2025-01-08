@@ -6,6 +6,9 @@ import 'package:application/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:application/widgets/chat_widget.dart'; // Import your ChatWidget
+import 'package:application/screens/user/user_store_screen.dart';
 
 class UserDashboardScreen extends StatefulWidget {
   const UserDashboardScreen({Key? key}) : super(key: key);
@@ -15,9 +18,13 @@ class UserDashboardScreen extends StatefulWidget {
 }
 
 class _UserDashboardScreenState extends State<UserDashboardScreen> {
+  String? userId;
+
   @override
   void initState() {
     super.initState();
+    // Get the userId from FirebaseAuth
+    userId = FirebaseAuth.instance.currentUser?.uid;
     _fetchAchievements();
   }
 
@@ -34,78 +41,94 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              UserProfileSection(),
-              const SizedBox(height: 30),
-              GridView.count(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.card_giftcard,
-                    title: 'Bingo Cards',
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserBingoCardsScreen()));
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.leaderboard,
-                    title: 'Leader Board',
-                    onTap: () {
-                      Navigator.push(
+                  UserProfileSection(),
+                  const SizedBox(height: 30),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    children: [
+                      _buildDashboardCard(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => LeaderboardScreen(),
-                        ),
-                      );
-                    },
+                        icon: Icons.card_giftcard,
+                        title: 'Bingo Cards',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      UserBingoCardsScreen()));
+                        },
+                      ),
+                      _buildDashboardCard(
+                        context,
+                        icon: Icons.leaderboard,
+                        title: 'Leader Board',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LeaderboardScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      _buildDashboardCard(
+                        context,
+                        icon: Icons.article,
+                        title: 'Articles',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ArticlesScreen()));
+                        },
+                      ),
+                      _buildDashboardCard(
+                        context,
+                        icon: Icons.store,
+                        title: 'Store',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserStoreScreen()));
+                        },
+                      ),
+                    ],
                   ),
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.article,
-                    title: 'Articles',
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ArticlesScreen()));
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    icon: Icons.store,
-                    title: 'Store',
-                    onTap: () {},
-                  ),
+                  const SizedBox(height: 30),
+                  _buildRecentAchievementsSection(),
                 ],
               ),
-              const SizedBox(height: 30),
-              _buildRecentAchievementsSection(),
-            ],
-          ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: userId == null
+                  ? const CircularProgressIndicator() // Show loading if userId is not available
+                  : ChatWidget(userId: userId!), // Pass the dynamic userId
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildDashboardCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context, {
+        required IconData icon,
+        required String title,
+        required VoidCallback onTap,
+      }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -215,7 +238,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                           achievement.achievedAt.toString().split(' ')[0],
                           style: TextStyle(
                             color:
-                                Theme.of(context).primaryColor.withOpacity(0.8),
+                            Theme.of(context).primaryColor.withOpacity(0.8),
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
