@@ -1,3 +1,4 @@
+import 'package:application/screens/notifications_screen.dart';
 import 'package:application/screens/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,12 @@ class _UserProfileSectionState extends State<UserProfileSection> {
             const Spacer(),
             IconButton(
               icon: const Icon(Icons.notifications_none),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationScreen()));
+              },
             ),
             IconButton(
               icon: role == "user"

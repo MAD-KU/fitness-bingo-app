@@ -175,7 +175,7 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
               offset: const Offset(0, 3),
             ),
           ],
-          image: image != null && image.isNotEmpty
+          image: image != null && image.isNotEmpty && image.contains("http")
               ? DecorationImage(
                   image: NetworkImage(image),
                   fit: BoxFit.cover,

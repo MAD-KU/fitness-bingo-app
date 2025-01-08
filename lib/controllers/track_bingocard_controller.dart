@@ -166,6 +166,44 @@ class TrackBingoCardController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateBingoCardIsTodayCompleted() async {
+    try {
+      _setLoading(true);
+
+    
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('trackBingoCards')
+          .get();
+
+      DateTime today = DateTime.now();
+
+      for (var doc in snapshot.docs) {
+        var data = doc.data();
+
+      
+        DateTime updatedAt = (data['updatedAt'] as Timestamp).toDate();
+
+      
+        if (DateTime(updatedAt.year, updatedAt.month, updatedAt.day)
+            .isBefore(DateTime(today.year, today.month, today.day))) {
+          await FirebaseFirestore.instance
+              .collection('trackBingoCards')
+              .doc(doc.id)
+              .update({'isTodayCompleted': false});
+        }
+      }
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _setLoading(false);
+    }
+
+    notifyListeners();
+  }
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();

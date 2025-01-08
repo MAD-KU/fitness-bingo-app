@@ -40,7 +40,7 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Bingo Cards users'),
+        title: const Text('My Bingo Cards'),
         backgroundColor: Colors.transparent,
       ),
       body: Consumer2<BingoCardController, TrackBingoCardController>(
@@ -160,7 +160,7 @@ class _UserBingoCardsScreenState extends State<UserBingoCardsScreen> {
               offset: const Offset(0, 3),
             ),
           ],
-          image: image != null && image.isNotEmpty
+          image: image != null && image.isNotEmpty && image.contains("http")
               ? DecorationImage(
                   image: NetworkImage(image),
                   fit: BoxFit.cover,

@@ -14,7 +14,6 @@ import '../../../controllers/auth_controller.dart';
 import '../../../controllers/track_bingocard_controller.dart';
 import '../../../models/user_model.dart';
 
-// ManageActivitiesScreen
 
 class BingoCardDetailsScreen extends StatefulWidget {
   final BingoCardModel bingoCard;
@@ -186,11 +185,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                                             bingoCard: widget.bingoCard,
                                           )));
                             }
-
-                            trackBingoCardController
-                                .getMarkedBingoCards(userId!);
-
-                            setState(() {});
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
