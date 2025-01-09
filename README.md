@@ -1,7 +1,7 @@
-# FitBingo
+# FitSurge
 
 ## Overview
-FitBingo is a health and fitness app developed using Flutter, designed to help users engage in fitness activities through a gamified experience. The app allows users to complete tasks, earn rewards, track their progress, and interact with a community. It aims to make fitness fun and motivating while promoting a healthier lifestyle.
+FitSurge is a health and fitness app developed using Flutter, designed to help users engage in fitness activities through a gamified experience. The app allows users to complete tasks, earn rewards, track their progress, and interact with a community. It aims to make fitness fun and motivating while promoting a healthier lifestyle.
 
 ## Team Members
 - Chamika Srimantha
