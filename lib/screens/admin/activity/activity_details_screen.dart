@@ -61,11 +61,11 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                     borderRadius: BorderRadius.circular(15),
                     image: DecorationImage(
                       image: activity.imageUrl != null &&
-                              activity.imageUrl!.isNotEmpty &&
-                              activity.imageUrl!.contains("http")
+                          activity.imageUrl!.isNotEmpty &&
+                          activity.imageUrl!.contains("http")
                           ? NetworkImage(activity.imageUrl!)
                           : const AssetImage('assets/images/default1.jpg')
-                              as ImageProvider,
+                      as ImageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -74,9 +74,9 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                 Text(
                   activity.name ?? 'No Name',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -138,12 +138,40 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: ()async {
-                            await activityController.deleteActivity(activity.id!);
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text('Activity Deleted.'),
-                            ));
-                            Navigator.pop(context);
+                          onPressed: () async {
+                            final bool? confirmed = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Confirm Delete'),
+                                  content: const Text(
+                                      'Are you sure you want to delete this activity?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(true);
+                                      },
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmed == true) {
+                              await activityController.deleteActivity(activity.id!);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text('Activity Deleted.'),
+                              ));
+                              Navigator.pop(context);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),

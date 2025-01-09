@@ -1,15 +1,13 @@
 import 'package:application/controllers/bingocard_controller.dart';
 import 'package:application/screens/admin/activity/manage_activities_screen.dart'
-    as ManageActivitiesAdminScreen;
+as ManageActivitiesAdminScreen;
 import 'package:application/screens/user/activity/manage_activities_screen.dart'
-    as ManageActivitiesUserScreen;
-
+as ManageActivitiesUserScreen;
 import 'package:application/screens/admin/bingo_card/bingo_card_edit_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:application/models/bingocard_model.dart';
 import 'package:provider/provider.dart';
-
 import '../../../controllers/auth_controller.dart';
 import '../../../controllers/track_bingocard_controller.dart';
 import '../../../models/user_model.dart';
@@ -82,11 +80,11 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                         image: bingoCard.imageUrl != null &&
-                                bingoCard.imageUrl!.isNotEmpty &&
-                                bingoCard.imageUrl!.contains("http")
+                            bingoCard.imageUrl!.isNotEmpty &&
+                            bingoCard.imageUrl!.contains("http")
                             ? NetworkImage(bingoCard.imageUrl!)
                             : const AssetImage('assets/images/default.jpg')
-                                as ImageProvider,
+                        as ImageProvider,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -95,9 +93,9 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                   Text(
                     bingoCard.title ?? 'No Title',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -200,13 +198,38 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () async {
-                              bingoCardController
-                                  .deleteBingoCard(bingoCard.id!);
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text('Activity Deleted.'),
-                              ));
-                              Navigator.pop(context);
+                              final confirmDelete = await showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Confirm Deletion'),
+                                  content: const Text(
+                                      'Are you sure you want to delete this Bingo Card?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(true);
+                                      },
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirmDelete == true) {
+                                bingoCardController
+                                    .deleteBingoCard(bingoCard.id!);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text('Bingo Card Deleted.'),
+                                ));
+                                Navigator.pop(context);
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 14),
