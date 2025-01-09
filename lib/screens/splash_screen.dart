@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'FitBingo',
+                  'FitSurge',
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         fontSize: 40,
                         fontWeight: FontWeight.w900,

@@ -123,9 +123,9 @@ class _BingoCardEditScreenState extends State<BingoCardEditScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: ()async {
                       if (_formKey.currentState!.validate()) {
-                        bingoCardController.updateBingoCard(
+                        await bingoCardController.updateBingoCard(
                             widget.bingoCard.id!,
                             BingoCardModel(
                                 title: titleController.text,
@@ -137,6 +137,9 @@ class _BingoCardEditScreenState extends State<BingoCardEditScreen> {
                         bingoCardController
                             .getBingoCardById(widget.bingoCard.id!);
                         bingoCardController.getAllBingoCards();
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Bingo card updated.'),
+                        ));
                         Navigator.pop(context);
                       }
                     },
