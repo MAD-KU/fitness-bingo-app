@@ -105,7 +105,7 @@ class _ActivityEditScreenState extends State<ActivityEditScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           final updatedActivity = ActivityModel(
                             id: activity.id,
@@ -116,9 +116,12 @@ class _ActivityEditScreenState extends State<ActivityEditScreen> {
                             userId: activity.userId,
                             bingoCardId: activity.bingoCardId,
                           );
-                          activityController.updateActivity(
+                          await activityController.updateActivity(
                               activity.id!, updatedActivity);
                           activityController.getActivityById(activity.id!);
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Activity Updated.'),
+                          ));
                           Navigator.pop(context);
                         }
                       },

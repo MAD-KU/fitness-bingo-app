@@ -14,7 +14,6 @@ import '../../../controllers/auth_controller.dart';
 import '../../../controllers/track_bingocard_controller.dart';
 import '../../../models/user_model.dart';
 
-
 class BingoCardDetailsScreen extends StatefulWidget {
   final BingoCardModel bingoCard;
 
@@ -133,36 +132,6 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      if (userId == bingoCard.userId)
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BingoCardEditScreen(
-                                    bingoCard: bingoCard,
-                                  ),
-                                ),
-                              );
-
-                              if (result == true) {
-                                bingoCardController
-                                    .getBingoCardById(widget.bingoCard.id!);
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              backgroundColor: Theme.of(context).primaryColor,
-                            ),
-                            child: const Text(
-                              'Edit',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
@@ -197,6 +166,60 @@ class _BingoCardDetailsScreenState extends State<BingoCardDetailsScreen> {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 10),
+                      if (userId == bingoCard.userId) ...[
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BingoCardEditScreen(
+                                    bingoCard: bingoCard,
+                                  ),
+                                ),
+                              );
+
+                              if (result == true) {
+                                bingoCardController
+                                    .getBingoCardById(widget.bingoCard.id!);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              backgroundColor: Theme.of(context).primaryColor,
+                            ),
+                            child: const Text(
+                              'Edit',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              bingoCardController
+                                  .deleteBingoCard(bingoCard.id!);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text('Activity Deleted.'),
+                              ));
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              backgroundColor: Colors.redAccent,
+                            ),
+                            child: const Text(
+                              'Delete',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ],

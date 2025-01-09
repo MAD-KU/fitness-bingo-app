@@ -48,7 +48,8 @@ class TrackBingoCardController extends ChangeNotifier {
           'isTodayCompleted': allCompleted,
           'totalCompletes': allCompleted
               ? (trackBingoSnapshot.docs.first['totalCompletes'] ?? 0) + 1
-              : trackBingoSnapshot.docs.first['totalCompletes'] - 1,
+              : trackBingoSnapshot.docs.first['totalCompletes'] > 0 ?
+                  trackBingoSnapshot.docs.first['totalCompletes'] - 1 : 0,
           'updatedAt': DateTime.now(),
         });
 
@@ -111,8 +112,7 @@ class TrackBingoCardController extends ChangeNotifier {
     String? achievement;
     for (var level in achievementLevels) {
       if (points >= level['pointsRequired']) {
-        achievement =
-            level['title'];
+        achievement = level['title'];
       }
     }
 
@@ -121,8 +121,7 @@ class TrackBingoCardController extends ChangeNotifier {
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection('achievements')
             .where('userId', isEqualTo: userId)
-            .where('achievement',
-                isEqualTo: achievement)
+            .where('achievement', isEqualTo: achievement)
             .get();
 
         if (querySnapshot.docs.isEmpty) {
@@ -170,21 +169,16 @@ class TrackBingoCardController extends ChangeNotifier {
     try {
       _setLoading(true);
 
-    
-      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-          .instance
-          .collection('trackBingoCards')
-          .get();
+      QuerySnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection('trackBingoCards').get();
 
       DateTime today = DateTime.now();
 
       for (var doc in snapshot.docs) {
         var data = doc.data();
 
-      
         DateTime updatedAt = (data['updatedAt'] as Timestamp).toDate();
 
-      
         if (DateTime(updatedAt.year, updatedAt.month, updatedAt.day)
             .isBefore(DateTime(today.year, today.month, today.day))) {
           await FirebaseFirestore.instance
