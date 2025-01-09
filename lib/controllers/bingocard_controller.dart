@@ -45,9 +45,21 @@ class BingoCardController extends ChangeNotifier {
     }
   }
 
-  void deleteBingoCard(String id) {
-    _bingoCards.removeWhere((card) => card.id == id);
-    notifyListeners();
+  Future<void> deleteBingoCard(String id) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('bingoCards')
+          .doc(id)
+          .delete();
+
+      _bingoCards.removeWhere((card) => card.id == id);
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      notifyListeners();
+    }
   }
 
   Future<void> getBingoCardById(String id) async {

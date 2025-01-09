@@ -111,6 +111,9 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
                           bingoCardId: widget.bingoCard.id,
                           userId: userId);
                       await activityController.addActivity(newActivity);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Activity Added.'),
+                      ));
                       Navigator.pop(context);
                     }
                   },

@@ -138,8 +138,11 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            activityController.deleteActivity(activity.id!);
+                          onPressed: ()async {
+                            await activityController.deleteActivity(activity.id!);
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Activity Deleted.'),
+                            ));
                             Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
