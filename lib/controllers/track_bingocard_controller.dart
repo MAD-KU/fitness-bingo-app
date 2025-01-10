@@ -21,69 +21,103 @@ class TrackBingoCardController extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> updateBingoCardStatus(String bingoCardId, String userId) async {
-    _setLoading(true);
-    try {
-      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-          .instance
-          .collection('trackActivities')
-          .where('bingoCardId', isEqualTo: bingoCardId)
-          .where('userId', isEqualTo: userId)
-          .get();
+  _setLoading(true);
+  try {
+  
+    QuerySnapshot<Map<String, dynamic>> activitiesSnapshot = await FirebaseFirestore
+        .instance
+        .collection('activities')
+        .where('bingoCardId', isEqualTo: bingoCardId)
+        .get();
 
-      bool allCompleted =
-          snapshot.docs.every((doc) => doc['isTodayCompleted'] == true);
+    bool allCompleted = true;
 
-      QuerySnapshot<Map<String, dynamic>> trackBingoSnapshot =
+    for (var activityDoc in activitiesSnapshot.docs) {
+      String activityId = activityDoc.id;
+
+    
+      QuerySnapshot<Map<String, dynamic>> trackActivitiesSnapshot =
           await FirebaseFirestore.instance
-              .collection('trackBingoCards')
+              .collection('trackActivities')
               .where('bingoCardId', isEqualTo: bingoCardId)
               .where('userId', isEqualTo: userId)
+              .where('activityId', isEqualTo: activityId)
               .get();
 
-      if (trackBingoSnapshot.docs.isNotEmpty) {
-        await FirebaseFirestore.instance
-            .collection('trackBingoCards')
-            .doc(trackBingoSnapshot.docs.first.id)
-            .update({
-          'isTodayCompleted': allCompleted,
-          'totalCompletes': allCompleted
-              ? (trackBingoSnapshot.docs.first['totalCompletes'] ?? 0) + 1
-              : trackBingoSnapshot.docs.first['totalCompletes'] > 0 ?
-                  trackBingoSnapshot.docs.first['totalCompletes'] - 1 : 0,
-          'updatedAt': DateTime.now(),
-        });
+    
+      if (trackActivitiesSnapshot.docs.isEmpty) {
+        allCompleted = false;
+        break;
+      }
 
-        if (allCompleted) {
-          _todayMarkedBingoCards.add(bingoCardId);
-          await _updateUserPoints(userId, 50);
-        } else {
-          _todayMarkedBingoCards.remove(bingoCardId);
-          await _updateUserPoints(userId, -50);
-        }
-      } else {
-        await FirebaseFirestore.instance.collection('trackBingoCards').add({
-          'bingoCardId': bingoCardId,
-          'userId': userId,
-          'isTodayCompleted': allCompleted,
-          'totalCompletes': allCompleted ? 1 : 0,
-          'createdAt': DateTime.now(),
-          'updatedAt': DateTime.now(),
-        });
-
-        if (allCompleted) {
-          _todayMarkedBingoCards.add(bingoCardId);
-          await _updateUserPoints(userId, 50);
+    
+      for (var trackDoc in trackActivitiesSnapshot.docs) {
+        if (trackDoc['isTodayCompleted'] != true) {
+          allCompleted = false;
+          break;
         }
       }
 
-      _errorMessage = null;
-    } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
-      _setLoading(false);
+    
+      if (!allCompleted) break;
     }
-    notifyListeners();
+
+  
+    QuerySnapshot<Map<String, dynamic>> trackBingoSnapshot = await FirebaseFirestore
+        .instance
+        .collection('trackBingoCards')
+        .where('bingoCardId', isEqualTo: bingoCardId)
+        .where('userId', isEqualTo: userId)
+        .get();
+
+    if (trackBingoSnapshot.docs.isNotEmpty) {
+    
+      await FirebaseFirestore.instance
+          .collection('trackBingoCards')
+          .doc(trackBingoSnapshot.docs.first.id)
+          .update({
+        'isTodayCompleted': allCompleted,
+        'totalCompletes': allCompleted
+            ? (trackBingoSnapshot.docs.first['totalCompletes'] ?? 0) + 1
+            : (trackBingoSnapshot.docs.first['totalCompletes'] ?? 0) > 0
+                ? (trackBingoSnapshot.docs.first['totalCompletes'] ?? 0) - 1
+                : 0,
+        'updatedAt': DateTime.now(),
+      });
+
+      if (allCompleted) {
+        _todayMarkedBingoCards.add(bingoCardId);
+        await _updateUserPoints(userId, 50);
+      } else {
+        _todayMarkedBingoCards.remove(bingoCardId);
+        await _updateUserPoints(userId, -50);
+      }
+    } else {
+    
+      await FirebaseFirestore.instance.collection('trackBingoCards').add({
+        'bingoCardId': bingoCardId,
+        'userId': userId,
+        'isTodayCompleted': allCompleted,
+        'totalCompletes': allCompleted ? 1 : 0,
+        'createdAt': DateTime.now(),
+        'updatedAt': DateTime.now(),
+      });
+
+      if (allCompleted) {
+        _todayMarkedBingoCards.add(bingoCardId);
+        await _updateUserPoints(userId, 50);
+      }
+    }
+
+    _errorMessage = null;
+  } catch (e) {
+    _errorMessage = e.toString();
+  } finally {
+    _setLoading(false);
   }
+  notifyListeners();
+}
+
 
   Future<void> _updateUserPoints(String userId, int points) async {
     DocumentReference pointsRef =

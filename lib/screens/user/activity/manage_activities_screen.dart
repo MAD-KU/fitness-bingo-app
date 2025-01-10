@@ -60,12 +60,16 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
               return Center(child: Text(activityCtrl.errorMessage!));
             }
 
+            final int count = widget.bingoCard.category == "default"
+                ? activityCtrl.activities.length
+                : activityCtrl.activities.length + 1;
+
             return Column(
               children: [
                 const SizedBox(height: 20),
                 Expanded(
                   child: GridView.builder(
-                    itemCount: activityCtrl.activities.length + 1,
+                    itemCount: count,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -73,28 +77,8 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
                       mainAxisSpacing: 16,
                     ),
                     itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return _buildActivityCard(
-                          context,
-                          icon: Icons.add,
-                          title: 'Add Activity',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddActivityScreen(
-                                  bingoCard: widget.bingoCard,
-                                ),
-                              ),
-                            );
-                          },
-                          image: null,
-                          isHideMark: true,
-                          onMarkChanged: (_) {},
-                        );
-                      } else {
-                        ActivityModel activity =
-                            activityCtrl.activities[index - 1];
+                      if (widget.bingoCard.category == "default") {
+                        ActivityModel activity = activityCtrl.activities[index];
 
                         bool isMarked = trackCtrl.todayMarkedActivities
                             .contains(activity.id);
@@ -131,6 +115,66 @@ class _ManageActivitiesScreenState extends State<ManageActivitiesScreen> {
                                 .getMarkedBingoCards(userId!);
                           },
                         );
+                      } else {
+                        if (index == 0) {
+                          return _buildActivityCard(
+                            context,
+                            icon: Icons.add,
+                            title: 'Add Activity',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddActivityScreen(
+                                    bingoCard: widget.bingoCard,
+                                  ),
+                                ),
+                              );
+                            },
+                            image: null,
+                            isHideMark: true,
+                            onMarkChanged: (_) {},
+                          );
+                        } else {
+                          ActivityModel activity =
+                              activityCtrl.activities[index - 1];
+
+                          bool isMarked = trackCtrl.todayMarkedActivities
+                              .contains(activity.id);
+
+                          return _buildActivityCard(
+                            context,
+                            icon: Icons.star,
+                            title: activity.name ?? 'No Name',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ActivityDetailsScreen(
+                                      activityId: activity.id!),
+                                ),
+                              );
+                            },
+                            image: activity.imageUrl ?? '',
+                            isMarked: isMarked,
+                            onMarkChanged: (bool? value) {
+                              trackCtrl.toggleActivityMark(
+                                TrackActivityModel(
+                                  userId: userId,
+                                  activityId: activity.id!,
+                                  bingoCardId: widget.bingoCard.id,
+                                  isTodayCompleted: value,
+                                  totalCompletes: 0,
+                                  createdAt: DateTime.now(),
+                                  updatedAt: DateTime.now(),
+                                ),
+                              );
+
+                              trackBingoCardController
+                                  .getMarkedBingoCards(userId!);
+                            },
+                          );
+                        }
                       }
                     },
                   ),
