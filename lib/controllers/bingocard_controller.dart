@@ -21,7 +21,7 @@ class BingoCardController extends ChangeNotifier {
         .collection('bingoCards')
         .add(bingoCard.toJson());
 
-    _bingoCards.add(bingoCard);
+    getAllBingoCardsForUser(bingoCard.userId!);
     notifyListeners();
   }
 

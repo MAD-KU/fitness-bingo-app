@@ -98,7 +98,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                       decoration: InputDecoration(
                         labelText: 'Search Users',
                         labelStyle:
-                        TextStyle(color: Theme.of(context).primaryColor),
+                            TextStyle(color: Theme.of(context).primaryColor),
                         suffixIcon: Icon(
                           Icons.search,
                           color: Theme.of(context).primaryColor,
@@ -212,11 +212,11 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                           } else {
                             return _isLoadingMore
                                 ? const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
                                 : const SizedBox.shrink();
                           }
                         },
